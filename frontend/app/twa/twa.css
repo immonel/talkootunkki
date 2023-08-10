@@ -1,0 +1,8 @@
+body {
+  /* color: rgb(var(--tg-theme-text-color)); */
+  background: rgb(var(--tg-theme-bg-color));
+}
+
+a {
+  color: rgb(var(--tg-theme-link-color));
+}

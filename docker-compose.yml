@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  talkootunkki_frontend:
+    build: ./frontend
+    container_name: talkootunkki_frontend-dev
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL}
+    volumes:
+      - ./frontend/app:/app/app
+    ports:
+      - 3000:3000
+
+  talkootunkki_backend:
+    build: ./backend
+    container_name: talkootunkki_backend-dev
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TG_BOT_API_TOKEN: ${TG_BOT_API_TOKEN}
+      PORT: ${DEV_BACKEND_PORT}
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - 3001:3001
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: talkootunkki_postgres-dev
+    restart: always
+    environment:
+      POSTGRES_DB: talkoot
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  adminer:
+    image: adminer
+    container_name: talkootunkki_adminer-dev
+    restart: always
+    ports:
+      - 8080:8080
+

@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-rgb: 30, 30, 30;
+  }
+}
+
+@font-face {
+  font-family: 'Zona Pro Bold';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../public/fonts/ZonaPro-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Zona Pro Thin';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../public/fonts/ZonaPro-Thin.otf') format('opentype');
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
