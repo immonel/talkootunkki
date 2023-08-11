@@ -54,19 +54,6 @@ eventsRouter.get('/current', async (request, response, next) => {
   }
 })
 
-eventsRouter.get('/current', async (request, response, next) => {
-  try {
-    const currentEvent = await getCurrentEvent()
-    if (!currentEvent) {
-      response.status(204).end()
-      return
-    }
-    response.status(200).json(currentEvent)
-  } catch (exception) {
-    next(exception)
-  }
-})
-
 eventsRouter.get('/latest', async (request, response, next) => {
   try {
     const latestEvent = await getLatestEvent()
