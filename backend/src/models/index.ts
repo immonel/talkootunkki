@@ -12,9 +12,15 @@ Event.belongsToMany(Participant, { through: {
   unique: false
 }, foreignKey: 'event_id' })
 
-Event.sync({ alter: true })
-Participant.sync({ alter: true })
-Participation.sync({ alter: true })
+Event.sync({
+  // alter: true
+})
+Participant.sync({
+  // alter: true
+})
+Participation.sync({
+  // alter: true
+})
 
 export {
   Event,
