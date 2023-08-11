@@ -4,9 +4,10 @@ type Props = {
   options: string[];
   selected: string;
   setSelected: React.Dispatch<SetStateAction<string>>;
+  maxLength: number;
 }
 
-const SelectWithAddOption = ({ options, selected, setSelected }: Props) => {
+const SelectWithAddOption = ({ options, selected, setSelected, maxLength }: Props) => {
   const [ _options, setOptions ] = useState<string[]>([]);
   const [ newOption, setNewOption ] = useState<string>('');
   const [ newOptionInputOpen, setNewOptionInputOpen ] = useState(false)
@@ -35,6 +36,13 @@ const SelectWithAddOption = ({ options, selected, setSelected }: Props) => {
     setOptions(options)
   }, [ options ])
 
+  const handleNewOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value
+    if (!(input.length > maxLength)) {
+      setNewOption(input)
+    }
+  }
+
   return (
     <div className="w-full">
       <select
@@ -57,7 +65,7 @@ const SelectWithAddOption = ({ options, selected, setSelected }: Props) => {
             className="bg-gray-800 w-full p-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
             placeholder="Enter a new option"
             value={newOption}
-            onChange={(e) => setNewOption(e.target.value)}
+            onChange={handleNewOptionChange}
           />
           <button
             className="bg-cs-orange hover:bg-amber-700 rounded-xl p-3 m-2 w-1/2"

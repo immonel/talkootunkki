@@ -45,7 +45,7 @@ const Participation = sequelize.define<ParticipationModel>('Participation', {
     defaultValue: null
   },
   association: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING(32)
   }
 })
 

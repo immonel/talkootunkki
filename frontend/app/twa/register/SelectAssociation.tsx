@@ -1,6 +1,8 @@
 import React, { SetStateAction, FormEvent } from "react"
 import SelectWithAddOption from "@/app/common/SelectWithAddOption";
 
+const MAX_NAME_LENGTH = 32
+
 type Props = {
   associations: string[];
   selected: string;
@@ -37,6 +39,7 @@ const SelectAssociation = ({ associations, selected, setSelected, proceed }: Pro
           options={associations}
           selected={selected}
           setSelected={setSelected}
+          maxLength={MAX_NAME_LENGTH}
         />
         <button disabled={selected === '__add__'} className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
           Submit
