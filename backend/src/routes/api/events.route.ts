@@ -3,6 +3,7 @@ import { Event } from '../../models';
 import {
   getAllEvents,
   getCurrentEvent,
+  getCurrentEventAssociations,
   getEventDetails,
   getLatestEvent,
 } from '../../services/event.service';
@@ -49,6 +50,19 @@ eventsRouter.get('/current', async (request, response, next) => {
       return
     }
     response.status(200).json(currentEvent)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+eventsRouter.get('/current/associations', async (request, response, next) => {
+  try {
+    const associations = await getCurrentEventAssociations()
+    if (!associations.length) {
+      response.status(204).end()
+      return
+    }
+    response.status(200).json(associations)
   } catch (exception) {
     next(exception)
   }

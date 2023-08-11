@@ -1,46 +1,35 @@
 "use client"
-import React, { ChangeEvent, FormEvent, useState } from "react"
+import React, { ChangeEvent, FormEvent, SetStateAction, useState } from "react"
 import WebApp from "@twa-dev/sdk"
-import axios, { AxiosError } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
+import ErrorMessage from "../../common/ErrorMessage";
 
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
 const maxCodeLength = 6
 
-const headers = {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-
 // Truncate code to maxCodeLength and transform to upper case
-const formatCode = (code: string) => (
+const toTruncatedUpperCase = (code: string) => (
   code.length > maxCodeLength
     ? code.slice(0, maxCodeLength)
     : code
 ).toUpperCase()
 
-interface ErrorProps {
-  message: string
+type Props = {
+  code: string;
+  setCode: React.Dispatch<SetStateAction<string>>;
+  register: () => Promise<AxiosResponse<any, any>>;
 }
 
-const Error = ({ message }: ErrorProps) => (
-  <p className="text-red-600">{ message }</p>
-)
-
-const Register = () => {
-  const [ code, _setCode ]   = useState('')
+const Register = ({ code, setCode, register }: Props) => {
   const [ errorMessage, setErrorMessage ] = useState('')
-  const url = `${baseUrl}/api/register`
-  const initData = WebApp.initData
 
-  const setCode = (code: string) => _setCode(formatCode(code))
+  const setFormattedCode = (code: string) => setCode(toTruncatedUpperCase(code))
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    axios.post(url, { code, initData }, headers)
+    register()
       .then(() => {
         setErrorMessage('')
-        setCode('')
+        setFormattedCode('')
         WebApp.showAlert("nauraa")
       })
       .catch((error: AxiosError) => {
@@ -51,11 +40,11 @@ const Register = () => {
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCode(event.target.value)
+    setFormattedCode(event.target.value)
   }
   
   const qrScanCallback = (code: string) => {
-    setCode(code)
+    setFormattedCode(code)
     WebApp.closeScanQrPopup()
   }
 
@@ -78,7 +67,7 @@ const Register = () => {
           onChange={handleChange}
           className="w-full rounded-xl bg-gray-800 p-3 text-4xl text-center"
         />
-        { errorMessage && <Error message={errorMessage} /> }
+        { errorMessage && <ErrorMessage message={errorMessage} /> }
         <button className="bg-cs-orange rounded-xl p-4 w-full">
           Register
         </button>

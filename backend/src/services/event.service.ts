@@ -36,12 +36,17 @@ export const getCurrentEventAssociations = async () => {
   if (!event) {
     return []
   }
-  const associations = await Participation.findAll({
+  const associations = (await Participation.findAll({
     attributes: ['association'],
     where: {
       event_id: event.event_id
-    }
-  })
+    },
+    group: ['association']
+  }))
+    // Extract from objects
+    .map(x => x.association)
+    // Filter out empty entries
+    .filter(x => x) 
   return associations
 }
 

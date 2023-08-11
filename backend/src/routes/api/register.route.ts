@@ -31,7 +31,8 @@ registrationRouter.post('/', async (request, response, next) => {
       response.status(400).send('No currently running event to join')
       return
     }
-    const participation = await joinEvent(currentEvent.event_id, user.user_id)
+    const association: string | undefined = request.body.association || undefined
+    const participation = await joinEvent(currentEvent.event_id, user.user_id, association)
 
     setTimeout(async () => {
       await leaveEvent(currentEvent.event_id, user.user_id)
