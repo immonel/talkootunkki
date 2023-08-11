@@ -4,3 +4,8 @@ export interface Event {
   start_date: string;
   end_date: string;
 }
+
+export type LeaderboardAssociation = {
+  name: string;
+  totalTime: number;
+}

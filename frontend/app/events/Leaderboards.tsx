@@ -1,16 +1,13 @@
 import React from "react"
+import type { LeaderboardAssociation as Association } from "../types";
 
-export type LeaderboardDataRow = {
-  association: string;
-  totalTime: number;
-}
-
-type LeaderboardsProps = {
-  data: LeaderboardDataRow[];
+type LeaderboardProps = {
+  data: Association[];
 }
 
 type LeaderboardRowProps = {
-  data: LeaderboardDataRow
+  association: Association;
+  index: number;
 }
 
 const toTimeString = (time: any) => {
@@ -25,30 +22,38 @@ const toTimeString = (time: any) => {
   return `${hours}h ${minutes}m ${seconds}s`
 }
 
-const sortByTime = (associationA: LeaderboardDataRow, associationB: LeaderboardDataRow) => (
+const sortByTime = (associationA: Association, associationB: Association) => (
   associationB.totalTime - associationA.totalTime
 )
 
-const LeaderboardRow = ({ data }: LeaderboardRowProps) => (
-  <tr>
-    <td>{data.association}</td>
-    <td>{toTimeString(data.totalTime)}</td>
-  </tr>
+const LeaderboardRow = ({ association, index }: LeaderboardRowProps) => {
+  const colourMap = [
+    'text-yellow-400',
+    'text-gray-400',
+    'text-amber-800'
+  ]
+  return (
+    <li className="px-4 py-3 flex items-center justify-between">
+    <div className="flex items-center">
+      <span className={`text-sm font-medium ${colourMap[index] || 'text-gray-900'}`}>{index + 1}.</span>
+      <span className="ml-2 text-sm text-gray-600">{association.name}</span>
+    </div>
+    <span className="text-sm font-medium text-gray-900">{toTimeString(association.totalTime)}</span>
+    </li>
+  )
+}
+
+const Leaderboard = ({ data }: LeaderboardProps) => (
+  <div className="flex flex-col items-center w-10/12">
+    <h2 className="text-2xl font-semibold mb-4">Leaderboard</h2>
+    <div className="w-full max-w-md bg-white rounded-lg shadow text-">
+      <ul className="divide-y divide-gray-200">
+        {data.sort(sortByTime).map((association, index) => (
+          <LeaderboardRow key={index} association={association} index={index} />
+        ))}
+      </ul>
+    </div>
+  </div>
 )
 
-const Leaderboards = ({ data }: LeaderboardsProps) => (
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.sort(sortByTime).map((row, index) => (
-        <LeaderboardRow key={index} data={row} />
-      ))}
-    </tbody>
-  </table>
-)
-
-export default Leaderboards
+export default Leaderboard

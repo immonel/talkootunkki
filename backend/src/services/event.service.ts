@@ -1,7 +1,7 @@
 import { Event, Participation } from "../models"
 import { Op } from "sequelize"
 import _ from 'lodash';
-import { LeaderboardRow } from "../types";
+import { LeaderboardAssociation } from "../types";
 
 export const getAllEvents = async () => await Event.findAll()
 
@@ -107,11 +107,13 @@ const getLeaderboards = async (event_id: string) => {
     // Wrangle to an array
     .reduce((result, value, key) => {
       result.push({
-        association: key,
+        name: key,
         totalTime: value
       })
       return result
-    }, [] as LeaderboardRow[])
+    }, [] as LeaderboardAssociation[])
+    // Filter out null values
+    .filter(association => association.name !== 'null')
 
   return associations
 }

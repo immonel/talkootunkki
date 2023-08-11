@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import Leaderboards, { LeaderboardDataRow } from "./Leaderboards";
+import Leaderboards from "./Leaderboards";
+import type { LeaderboardAssociation as Association } from "../types";
 import axios from "axios";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
@@ -14,7 +15,7 @@ type EventData = {
   event_name: string;
   start_date: string;
   end_date: string;
-  leaderboards: LeaderboardDataRow[];
+  leaderboards: Association[];
 }
 
 const Event = ({ event_id }: EventProps) => {

@@ -5,7 +5,7 @@ export type TelegramUserData = {
   username?: string;
 }
 
-export type LeaderboardRow = {
-  association: string;
+export type LeaderboardAssociation = {
+  name: string;
   totalTime: number;
 }
