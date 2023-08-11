@@ -68,14 +68,14 @@ const Register = ({ code, setCode, register }: Props) => {
           className="w-full rounded-xl bg-gray-800 p-3 text-4xl text-center"
         />
         { errorMessage && <ErrorMessage message={errorMessage} /> }
-        <button className="bg-cs-orange rounded-xl p-4 w-full">
+        <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
           Register
         </button>
       </form>
 
       <button
         onClick={openQrScanPopup}
-        className="bg-cs-orange rounded-xl m-20 p-5"
+        className="bg-cs-orange hover:bg-amber-700 rounded-xl m-20 p-5"
       >
         <i className="bi-qr-code-scan text-5xl" />
       </button>

@@ -16,12 +16,12 @@ const Page = () => {
       </div>
       <div className="flex flex-col w-60 gap-5">
         <Link href="/twa/register" className="w-full">
-          <button className="bg-cs-orange rounded-xl p-4 w-full">
+          <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
             Register
           </button>
         </Link>
         <Link href="/twa/leaderboards" className="w-full">
-          <button className="bg-cs-orange rounded-xl p-4 w-full">
+          <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
             Leaderboards
           </button>
         </Link>
