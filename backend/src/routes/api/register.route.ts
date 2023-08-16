@@ -37,9 +37,9 @@ registrationRouter.post('/', async (request, response, next) => {
     const association: string | undefined = request.body.association || undefined
     const participation = await joinEvent(currentEvent.event_id, user.user_id, association)
 
-    setTimeout(async () => {
-      await leaveEvent(currentEvent.event_id, user.user_id)
-    }, 3000)
+    // setTimeout(async () => {
+    //   await leaveEvent(currentEvent.event_id, user.user_id)
+    // }, 30000)
     
     response.status(200).send('nauraa')
   } catch (exception) {
@@ -67,6 +67,21 @@ registrationRouter.post('/check', async (request, response, next) => {
     response.status(400).end()
     return
   }
+  response.status(200).json(userData)
+})
+
+registrationRouter.post('/finish', async (request, response, next) => {
+  const userData = getUserData(request.body.initData)
+  if (!userData) {
+    response.status(400).end()
+    return
+  }
+  const currentEvent = await getCurrentEvent()
+  if (!currentEvent) {
+    response.status(400).send('No event to finish')
+    return
+  }
+  await leaveEvent(currentEvent.event_id, userData.id.toString())
   response.status(200).json(userData)
 })
 
