@@ -30,7 +30,7 @@ const Register = ({ code, setCode, register }: Props) => {
       .then(() => {
         setErrorMessage('')
         setFormattedCode('')
-        WebApp.showAlert("nauraa")
+        window.location.href = '/twa'
       })
       .catch((error: AxiosError) => {
         error.response?.status === 400
