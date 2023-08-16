@@ -1,32 +1,28 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import WebApp from '@twa-dev/sdk'
-import Link from 'next/link'
+import FrontPage from './FrontPage'
+import axios from 'axios'
+import LoggedIn from './LoggedIn'
+
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || ''
 
 const Page = () => {
+  const [ loggedIn, setLoggedIn ] = useState(false)
+  const initData = WebApp.initData
 
   useEffect(() => {
     WebApp.BackButton.hide()
-  }, [])
+
+    axios.post(`${baseUrl}/api/register/check`, { initData })
+      .then(ok => setLoggedIn(true))
+      .catch(error => setLoggedIn(false))
+  }, [ initData ])
 
   return (
-    <main className="flex flex-col items-center gap-10 mt-20">
-      <div>
-        <h3>Kylän talkoot</h3>
-      </div>
-      <div className="flex flex-col w-60 gap-5">
-        <Link href="/twa/register" className="w-full">
-          <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
-            Register
-          </button>
-        </Link>
-        <Link href="/twa/leaderboards" className="w-full">
-          <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
-            Leaderboards
-          </button>
-        </Link>
-      </div>
-    </main>
+    <>
+      { loggedIn ? <LoggedIn initData={initData} setLoggedIn={setLoggedIn} /> : <FrontPage /> }
+    </>
   )
 }
 
