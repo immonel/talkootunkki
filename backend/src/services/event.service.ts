@@ -2,6 +2,7 @@ import { Event, Participation } from "../models"
 import { Op } from "sequelize"
 import _ from 'lodash';
 import { LeaderboardAssociation } from "../types";
+import { hasOpenParticipation } from "./participant.service";
 
 export const getAllEvents = async () => await Event.findAll()
 
@@ -60,12 +61,8 @@ export const getLatestEvent = async () => {
 }
 
 export const joinEvent = async (event_id: string, user_id: string, association?: string) => {
-  const openParticipations = await Participation.findAll({ where: {
-    event_id,
-    user_id,
-    end_date: null
-  }})
-  if (openParticipations.length > 0) {
+  const alreadyJoined = await hasOpenParticipation(user_id, event_id)
+  if (alreadyJoined) {
     return
   }
   return await Participation.create({
