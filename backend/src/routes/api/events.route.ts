@@ -19,6 +19,20 @@ eventsRouter.get('/', async (request, response, next) => {
   }
 })
 
+eventsRouter.get('/current', async (request, response, next) => {
+  try {
+    const currentEvent = await getCurrentEvent()
+    if (!currentEvent) {
+      response.status(204).end()
+      return
+    }
+    const eventDetails = await getEventDetails(currentEvent.event_id)
+    response.status(200).json(eventDetails)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 eventsRouter.get('/:id', async (request, response, next) => {
   try {
     const eventDetails = await getEventDetails(request.params.id)
@@ -37,19 +51,6 @@ eventsRouter.post('/', async (request, response, next) => {
     const event = request.body
     await Event.create(event)
     response.status(200).send('ok')
-  } catch (exception) {
-    next(exception)
-  }
-})
-
-eventsRouter.get('/current', async (request, response, next) => {
-  try {
-    const currentEvent = await getCurrentEvent()
-    if (!currentEvent) {
-      response.status(204).end()
-      return
-    }
-    response.status(200).json(currentEvent)
   } catch (exception) {
     next(exception)
   }
