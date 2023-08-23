@@ -33,7 +33,9 @@ const SelectWithAddOption = ({ options, selected, setSelected, maxLength }: Prop
   }
 
   useEffect(() => {
-    setOptions(options)
+    if (options) {
+      setOptions(options)
+    }
   }, [ options ])
 
   const handleNewOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
