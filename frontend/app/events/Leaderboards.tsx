@@ -1,5 +1,6 @@
 import React from "react"
 import type { LeaderboardAssociation as Association } from "../types";
+import { toTimeString } from "../utils";
 
 type LeaderboardProps = {
   data: Association[];
@@ -8,18 +9,6 @@ type LeaderboardProps = {
 type LeaderboardRowProps = {
   association: Association;
   index: number;
-}
-
-const toTimeString = (time: any) => {
-  const milliseconds = Number(time)
-  if (Number.isNaN(milliseconds)) {
-    return 'NaN'
-  }
-  const timeInSeconds = milliseconds / 1000
-  const hours = Math.floor(timeInSeconds / 3600)
-  const minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60)
-  const seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60))
-  return `${hours}h ${minutes}m ${seconds}s`
 }
 
 const sortByTime = (associationA: Association, associationB: Association) => (
@@ -38,7 +27,7 @@ const LeaderboardRow = ({ association, index }: LeaderboardRowProps) => {
       <span className={`text-sm font-medium ${colourMap[index] || 'text-gray-900'}`}>{index + 1}.</span>
       <span className="ml-2 text-sm text-gray-600">{association.name}</span>
     </div>
-    <span className="text-sm font-medium text-gray-900">{toTimeString(association.totalTime)}</span>
+    <span className="text-sm font-medium text-gray-900">{toTimeString(association.totalTime, 'HHMM')}</span>
     </li>
   )
 }
