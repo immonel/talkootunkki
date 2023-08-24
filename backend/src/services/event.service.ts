@@ -1,4 +1,4 @@
-import { Event, Participation } from "../models"
+import { Event, Participant, Participation } from "../models"
 import { Op } from "sequelize"
 import _ from 'lodash';
 import { LeaderboardAssociation } from "../types";
@@ -79,6 +79,12 @@ export const leaveEvent = async (event_id: string, user_id: string) => {
       user_id,
       end_date: null
     }
+  })
+}
+
+export const deleteParticipation = async (participation_id: string) => {
+  return await Participation.destroy({
+    where: { participation_id }
   })
 }
 

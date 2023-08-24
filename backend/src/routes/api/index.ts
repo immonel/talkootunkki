@@ -3,6 +3,7 @@ import type { Router } from 'express';
 
 import eventsRouter from './events.route'
 import registrationRouter from './register.route';
+import participationsRouter from './participations.route';
 
 const apiRouter = express.Router()
 
@@ -19,6 +20,10 @@ const defaultRoutes: Route[] = [
   {
     path: '/register',
     router: registrationRouter
+  },
+  {
+    path: '/participations',
+    router: participationsRouter
   }
 ]
 
