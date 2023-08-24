@@ -35,7 +35,7 @@ const LeaderboardRow = ({ association, index }: LeaderboardRowProps) => {
 const Leaderboard = ({ data }: LeaderboardProps) => (
   <div className="flex flex-col items-center w-10/12">
     <h2 className="text-2xl font-semibold mb-4">Leaderboard</h2>
-    <div className="w-full max-w-md bg-white rounded-lg shadow text-">
+    <div className="w-full max-w-md bg-white rounded-lg shadow">
       <ul className="divide-y divide-gray-200">
         {data.sort(sortByTime).map((association, index) => (
           <LeaderboardRow key={index} association={association} index={index} />
