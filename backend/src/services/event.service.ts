@@ -92,22 +92,24 @@ const getLeaderboards = async (event_id: string) => {
   return associations
 }
 
+const getParticipations = async (event_id: string) => {
+  const participations = await Participation.findAll({
+    where: { event_id },
+    include: Participant
+  })
+  return participations
+}
+
 export const getEventDetails = async (event_id: string) => {
   const event = await getEventById(event_id)
   if (!event) {
     return null
   }
   const leaderboards = await getLeaderboards(event_id)
+  const participations = await getParticipations(event_id)
   return {
     ...event.dataValues,
-    leaderboards
+    leaderboards,
+    participations
   }
-}
-
-export const getParticipations = async (event_id: string) => {
-  const participations = await Participation.findAll({
-    where: { event_id },
-    include: Participant
-  })
-  return participations
 }

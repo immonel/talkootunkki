@@ -6,7 +6,6 @@ import {
   getCurrentEventAssociations,
   getEventDetails,
   getLatestEvent,
-  getParticipations,
 } from '../../services/event.service';
 
 const eventsRouter = express.Router();
@@ -78,15 +77,6 @@ eventsRouter.get('/latest', async (request, response, next) => {
       return
     }
     response.status(200).json(latestEvent)
-  } catch (exception) {
-    next(exception)
-  }
-})
-
-eventsRouter.get('/:id/participations', async (request, response, next) => {
-  try {
-    const participations = await getParticipations(request.params.id)
-    response.status(200).json(participations)
   } catch (exception) {
     next(exception)
   }

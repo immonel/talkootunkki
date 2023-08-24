@@ -1,17 +1,13 @@
 "use client"
-import { Participant, Participation } from '@/app/types';
+import { ParticipationWithParticipant } from '@/app/types';
 import { toTimeString } from '@/app/utils';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
 
-interface ParticipationWithParticipant extends Participation {
-  Participant: Participant;
-}
-
 type Props = {
-  event_id: string;
+  participations: ParticipationWithParticipant[];
 }
 
 type ParticipationListItemProps = {
@@ -63,27 +59,17 @@ const ParticipationListItem = ({ participation }: ParticipationListItemProps) =>
   )
 }
 
-const ParticipationList = ({ event_id }: Props) => {
-  const [ participations, setParticipations ] = useState<ParticipationWithParticipant[]>([])
-
-  useEffect(() => {
-    axios.get(`${baseUrl}/api/events/${event_id}/participations`)
-      .then(response => setParticipations(response.data.reverse()))
-      .catch(error => console.log('Failed to load participations', error))
-  }, [ event_id ])
-
-  return (
-    <div className="flex flex-col items-center w-10/12">
-      <h2 className="text-2xl font-semibold mb-4">Participations</h2>
-      <div className="w-full bg-white rounded-lg shadow">
-        <ul className="divide-y divide-gray-200">
-          {participations.map((participation, index) => (
-            <ParticipationListItem key={index} participation={participation} />
-          ))}
-        </ul>
-      </div>
+const ParticipationList = ({ participations }: Props) => (
+  <div className="flex flex-col items-center w-10/12">
+    <h2 className="text-2xl font-semibold mb-4">Participations</h2>
+    <div className="w-full bg-white rounded-lg shadow">
+      <ul className="divide-y divide-gray-200">
+        {participations.map((participation, index) => (
+          <ParticipationListItem key={index} participation={participation} />
+        ))}
+      </ul>
     </div>
-  )
-}
+  </div>
+)
 
 export default ParticipationList

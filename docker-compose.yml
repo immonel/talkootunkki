@@ -19,6 +19,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       TG_BOT_API_TOKEN: ${TG_BOT_API_TOKEN}
       PORT: ${DEV_BACKEND_PORT}
+      WS_EVENT_BROADCAST_INTERVAL: ${WS_EVENT_BROADCAST_INTERVAL}
     volumes:
       - ./backend/src:/app/src
     ports:

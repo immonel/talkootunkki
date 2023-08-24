@@ -1,9 +1,10 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import type { EventWithLeaderboards } from "@/app/types";
+import type { AdminEventData } from "@/app/types";
 import Leaderboards from "@/app/common/Leaderboards";
 import axios from "axios";
 import ParticipationList from "./ParticipationList";
+import { adminSocket } from "@/app/utils/socket";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
 
@@ -12,7 +13,7 @@ type EventProps = {
 }
 
 type EventInfoProps = {
-  eventData: EventWithLeaderboards
+  eventData: AdminEventData;
 }
 
 const EventInfo = ({ eventData }: EventInfoProps) => {
@@ -27,30 +28,36 @@ const EventInfo = ({ eventData }: EventInfoProps) => {
       </div>
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <Leaderboards data={eventData.leaderboards} />
-        <ParticipationList event_id={eventData.event_id} />
+        <ParticipationList participations={eventData.participations} />
       </div>
     </div>
   )
 }
 
 const Event = ({ event_id }: EventProps) => {
-  const [ eventData, setEventData ] = useState<EventWithLeaderboards | null>(null)
+  const [ eventData, setEventData ] = useState<AdminEventData | null>(null)
   const [ errorMessage, setErrorMessage ] = useState('Loading event data...')
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      axios.get(`${baseUrl}/api/events/${event_id}`)
-        .then(response => {
-          setEventData(response.data)
-          setErrorMessage('')
-        })
-        .catch(error => {
-          setErrorMessage('Failed to load event data')
-          console.log('Failed to fetch leaderboard data for event ', event_id, error)
-        })
-    }, 1000)
+    axios.get(`${baseUrl}/api/events/${event_id}`)
+      .then(response => {
+        setEventData(response.data)
+        setErrorMessage('')
+      })
+      .catch(error => {
+        setErrorMessage('Failed to load event data')
+        console.log('Failed to fetch leaderboard data for event ', event_id, error)
+      })
 
-    return () => clearInterval(interval)
+    adminSocket.on('CURRENT_EVENT', (data) => {
+      if (data?.event_id === event_id) {
+        setEventData(data)
+      }
+    })
+
+    return () => {
+      adminSocket.off('CURRENT_EVENT')
+    }
   }, [ event_id ])
 
   return (

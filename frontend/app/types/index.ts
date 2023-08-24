@@ -25,10 +25,14 @@ export type LeaderboardAssociation = {
   totalTime: number;
 }
 
-export type EventWithLeaderboards = {
-  event_id: string;
-  event_name: string;
-  start_date: string;
-  end_date: string;
+export interface EventWithLeaderboards extends Event {
   leaderboards: LeaderboardAssociation[];
+}
+
+export interface ParticipationWithParticipant extends Participation {
+  Participant: Participant;
+}
+
+export interface AdminEventData extends EventWithLeaderboards {
+  participations: ParticipationWithParticipant[];
 }

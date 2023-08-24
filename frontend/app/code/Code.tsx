@@ -1,10 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import QRCode from 'qrcode';
-
-const WS_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '';
-const token = 'admin';
+import { adminSocket } from '../utils/socket';
 
 const generateQR = (code: string) => {
   const canvas = document.getElementById('qr-code')
@@ -15,17 +12,14 @@ const Code = () => {
   const [ code, setCode ] = useState('')
 
   useEffect(() => {
-    const socket = io(WS_URL, {
-      query: {token}
-    });
-
-    socket.on('UPDATE_CODE', (code: string) => {
+    adminSocket.on('UPDATE_CODE', (code: string) => {
       setCode(code)
       generateQR(code)
     })
+    adminSocket.emit('UPDATE_CODE')
 
     return () => {
-      socket.off('UPDATE_CODE');
+      adminSocket.off('UPDATE_CODE');
     };
   }, [])
   
