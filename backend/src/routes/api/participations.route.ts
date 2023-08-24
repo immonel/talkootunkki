@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteParticipation } from '../../services/event.service';
+import { deleteParticipation } from '../../services/participant.service';
 
 const participationsRouter = express.Router();
 

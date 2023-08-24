@@ -1,8 +1,8 @@
 import express from 'express'
 import { getUserData } from '../../services/telegram.service';
 import { validate } from '../../services/code.service';
-import { hasOpenParticipation, saveOrUpdateParticipantToDb } from '../../services/participant.service';
-import { getCurrentEvent, joinEvent, leaveEvent } from '../../services/event.service';
+import { hasOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
+import { getCurrentEvent } from '../../services/event.service';
 
 const registrationRouter = express.Router();
 
