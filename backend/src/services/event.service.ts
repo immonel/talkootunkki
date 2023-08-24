@@ -132,3 +132,11 @@ export const getEventDetails = async (event_id: string) => {
     leaderboards
   }
 }
+
+export const getParticipations = async (event_id: string) => {
+  const participations = await Participation.findAll({
+    where: { event_id },
+    include: Participant
+  })
+  return participations
+}
