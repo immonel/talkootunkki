@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link";
 
 const FrontPage = () => (
-  <main className="flex flex-col items-center gap-10 mt-20">
+  <main className="flex flex-col items-center gap-10 mt-10">
     <div>
       <h3>Kylän talkoot</h3>
     </div>
