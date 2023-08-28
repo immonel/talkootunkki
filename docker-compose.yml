@@ -5,9 +5,9 @@ services:
     build: ./frontend
     container_name: talkootunkki_frontend-dev
     environment:
-      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL}
+      VITE_BACKEND_URL: ${BACKEND_URL}
     volumes:
-      - ./frontend/app:/app/app
+      - ./frontend/src:/app/src
     ports:
       - 3000:3000
 
