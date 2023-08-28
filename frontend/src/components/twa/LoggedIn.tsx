@@ -2,8 +2,6 @@ import axios from "axios";
 import React, { SetStateAction } from "react";
 import CurrentEvent from "./CurrentEvent";
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || '';
-
 type Props = {
   initData: string;
   setLoggedIn: React.Dispatch<SetStateAction<boolean>>;
@@ -11,7 +9,7 @@ type Props = {
 
 const LoggedIn = ({ initData, setLoggedIn }: Props) => {
   const logout = async () => {
-    await axios.post(`${baseUrl}/api/register/finish`, { initData })
+    await axios.post('/api/register/finish', { initData })
       .then(response => {
         console.log('Logged out user', response.data.id)
         setLoggedIn(false)

@@ -6,7 +6,6 @@ import Register from '@components/twa/register/Register';
 import DebugInfo from '@components/twa/DebugInfo';
 
 const showDebugInfo = import.meta.env.DEV
-const baseUrl = import.meta.env.VITE_BACKEND_URL || '';
 
 type Stage = 'selectAssociation' | 'register'
 
@@ -18,7 +17,7 @@ const RegisterPage = () => {
   const initData = WebApp.initData
   
   const register = async () => {
-    const url = `${baseUrl}/api/register`
+    const url = '/api/register'
     return axios.post(url, { code, initData, association: selectedAssociation })
   }
   
@@ -43,7 +42,7 @@ const RegisterPage = () => {
     WebApp.BackButton.show()
     WebApp.BackButton.onClick(() => location.href = "/twa")
 
-    axios.get(`${baseUrl}/api/events/current/associations`)
+    axios.get('/api/events/current/associations')
       .then(response => setAssociations(response.data))
       .catch(error => console.log('Failed to fetch associations', error))
   }, [])

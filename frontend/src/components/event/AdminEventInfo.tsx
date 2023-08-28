@@ -5,8 +5,6 @@ import Leaderboard from "@components/common/Leaderboards";
 import ParticipationList from "./ParticipationList";
 import { adminSocket } from "@/src/utils/socket";
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || '';
-
 type EventProps = {
   event_id: string;
 }
@@ -38,7 +36,7 @@ const AdminEventInfo = ({ event_id }: EventProps) => {
   const [ errorMessage, setErrorMessage ] = useState('Loading event data...')
 
   useEffect(() => {
-    axios.get(`${baseUrl}/api/events/${event_id}`)
+    axios.get(`/api/events/${event_id}`)
       .then(response => {
         setEventData(response.data)
         setErrorMessage('')

@@ -2,8 +2,6 @@ import { ParticipationWithParticipant } from '@/src/types';
 import { toTimeString } from '@/src/utils';
 import axios from 'axios';
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || '';
-
 type Props = {
   participations: ParticipationWithParticipant[];
 }
@@ -13,7 +11,7 @@ type ParticipationListItemProps = {
 }
 
 const deleteParticipation = (participation_id: string) => (
-  axios.delete(`${baseUrl}/api/participations/${participation_id}`)
+  axios.delete(`/api/participations/${participation_id}`)
     .then(() => console.log('Deleted participation', participation_id))
     .catch(error => console.log('Failed to delete participation', participation_id, error))
 )

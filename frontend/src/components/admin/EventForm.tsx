@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 
-const baseUrl = import.meta.env.NEXT_PUBLIC_BACKEND_URL || ''
-
 const EventForm = () => {
   const [eventName, setEventName] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -28,7 +26,7 @@ const EventForm = () => {
       'end_date': endDateTime
     }
     console.log('Form submitted:', event)
-    await axios.post(`${baseUrl}/api/events`, event)
+    await axios.post('/api/events', event)
       .catch((error) => console.log('Error submitting event', error))
     console.log('Event submitted successfully')
     window.location.href = '/admin'

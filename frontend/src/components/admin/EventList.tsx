@@ -2,13 +2,11 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import EventListItem from "./EventListItem"
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || ''
-
 const EventList = () => {
   const [ events, setEvents ] = useState([])
 
   useEffect(() => {
-    axios.get(`${baseUrl}/api/events`)
+    axios.get('/api/events')
       .then((response) => setEvents(response.data))
       .catch((error) => console.log('Error loading events', error))
   }, [])

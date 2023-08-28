@@ -4,8 +4,6 @@ import axios from 'axios'
 import FrontPage from '@/src/components/twa/FrontPage'
 import LoggedIn from '@/src/components/twa/LoggedIn'
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || ''
-
 const TelegramWebApp = () => {
   const [ loggedIn, setLoggedIn ] = useState(false)
   const [ loading, setLoading ] = useState(true)
@@ -14,7 +12,7 @@ const TelegramWebApp = () => {
   useEffect(() => {
     WebApp.BackButton.hide()
 
-    axios.post(`${baseUrl}/api/register/check`, { initData })
+    axios.post('/api/register/check', { initData })
       .then(() => {
         setLoggedIn(true)
         setLoading(false)
