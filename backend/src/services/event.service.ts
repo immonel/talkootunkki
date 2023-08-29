@@ -13,6 +13,14 @@ const getEventById = async (id: string) => (
   })
 )
 
+export const deleteEventById = async (id: string) => (
+  await Event.destroy({
+    where: {
+      event_id: id
+    }
+  })
+)
+
 export const getCurrentEvent = async () => {
   const currentDate = Date.now()
   const currentEvent = await Event.findOne({

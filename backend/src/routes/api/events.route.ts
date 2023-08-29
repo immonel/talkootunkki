@@ -1,6 +1,7 @@
 import express from 'express'
 import { Event } from '../../models';
 import {
+  deleteEventById,
   getAllEvents,
   getCurrentEvent,
   getCurrentEventAssociations,
@@ -41,6 +42,20 @@ eventsRouter.get('/:id', async (request, response, next) => {
       return
     }
     response.status(200).json(eventDetails)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+eventsRouter.delete('/:id', async (request, response, next) => {
+  try {
+    const event_id = request.params.id
+    const rowsDeleted = await deleteEventById(event_id)
+    if (!rowsDeleted) {
+      response.status(404).end()
+      return
+    }
+    response.status(200).json({ event_id })
   } catch (exception) {
     next(exception)
   }
