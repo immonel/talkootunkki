@@ -17,6 +17,12 @@ type EventInfoProps = {
 const EventInfo = ({ eventData }: EventInfoProps) => {
   const startDate = new Date(eventData.start_date).toLocaleString('fi')
   const endDate   = new Date(eventData.end_date).toLocaleString('fi')
+  const participations = eventData.participations
+  const totalParticipations = participations.length
+  const currentlyParticipating = participations
+    .filter(participation => participation.end_date === null)
+    .length
+
   const navigate  = useNavigate()
 
   const handleDelete = () => {
@@ -43,6 +49,10 @@ const EventInfo = ({ eventData }: EventInfoProps) => {
             Delete event
           </button>
         </div>
+      </div>
+      <div className="w-full">
+        <p>Total participations: {totalParticipations}</p>
+        <p>Currently participating: {currentlyParticipating}</p>
       </div>
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <Leaderboard data={eventData.leaderboards} />
