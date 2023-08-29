@@ -12,8 +12,8 @@ services:
       TG_BOT_API_TOKEN: ${TG_BOT_API_TOKEN}
       WS_EVENT_BROADCAST_INTERVAL: ${WS_EVENT_BROADCAST_INTERVAL}
       PORT: ${BACKEND_PORT}
-    ports:
-      - 80:3001
+    networks:
+      - app-network
 
   postgres:
     image: postgres:15-alpine
@@ -23,45 +23,49 @@ services:
       POSTGRES_DB: talkoot
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app-network
 
-  # nginx:
-  #   image: nginx
-  #   container_name: talkootunkki_nginx
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #   depends_on:
-  #     - talkootunkki
-  #   ports:
-  #     - 80:80
+  nginx:
+    image: nginx:mainline-alpine
+    container_name: talkootunkki_nginx
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - talkootunkki
+    networks:
+      - app-network
+    ports:
+      - 80:80
+      - 443:443
 
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #     - web-root:/var/www/html
-  #   depends_on:
-  #     - webserver
-  #   command: >
-  #     certonly
-  #     --webroot
-  #     --webroot-path=/var/www/html
-  #     --agree-tos
-  #     --no-eff-email
-  #     --staging
-  #     -d your_domain
-  #     -d www.your_domain
+  certbot:
+    image: certbot/certbot
+    container_name: talkootunkki_certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - nginx
+    command: >
+      certonly
+      --webroot
+      --webroot-path=/var/www/html
+      --agree-tos
+      --email ${CERTBOT_EMAIL}
+      --no-eff-email
+      --staging
+      -d talkoot.vuodenkyla.fi
 
-# volumes:
-#   certbot-etc:
-#   certbot-var:
-  # web-root:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     device: /home/sammy/node_project/views/
-  #     o: bind
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+
+networks:
+  app-network:
+    driver: bridge
