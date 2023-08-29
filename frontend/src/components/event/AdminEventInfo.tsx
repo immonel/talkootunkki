@@ -4,6 +4,7 @@ import { AdminEventData } from "@/src/types";
 import Leaderboard from "@components/common/Leaderboards";
 import ParticipationList from "./ParticipationList";
 import { adminSocket } from "@/src/utils/socket";
+import { useNavigate } from "react-router-dom";
 
 type EventProps = {
   event_id: string;
@@ -16,12 +17,32 @@ type EventInfoProps = {
 const EventInfo = ({ eventData }: EventInfoProps) => {
   const startDate = new Date(eventData.start_date).toLocaleString('fi')
   const endDate   = new Date(eventData.end_date).toLocaleString('fi')
+  const navigate  = useNavigate()
+
+  const handleDelete = () => {
+    const id = eventData.event_id
+    if (window.confirm('Are you sure?')) {
+      axios.delete(`/api/events/${id}`)
+        .then(() => navigate('/admin'))
+        .catch(error => console.log('Failed to delete event', error))
+    }
+  }
   
   return (
     <div className="flex flex-col gap-10 w-10/12 items-center">
-      <div className="w-full">
-        <h2 className="text-2xl">{eventData.event_name}</h2>
-        <p>{startDate} - {endDate}</p>
+      <div className="flex flex-row w-full justify-between items-center">
+        <div>
+          <h2 className="text-2xl">{eventData.event_name}</h2>
+          <p>{startDate} - {endDate}</p>
+        </div>
+        <div>
+          <button
+            onClick={handleDelete}
+            className="rounded-xl p-3 bg-red-700 hover:bg-red-800"
+          >
+            Delete event
+          </button>
+        </div>
       </div>
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <Leaderboard data={eventData.leaderboards} />
