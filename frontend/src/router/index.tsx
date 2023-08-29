@@ -8,7 +8,7 @@ import TelegramWebApp from '../pages/twa'
 import CodePage from '../pages/code'
 import AdminPage from '../pages/admin'
 import CreateEventPage from '../pages/admin/create_event'
-import RegisterPage from '../pages/register'
+import RegisterPage from '../pages/twa/register'
 import TWALeaderboardPage from '../pages/twa/leaderboards'
 import EventAdminPage from '../pages/admin/event'
 

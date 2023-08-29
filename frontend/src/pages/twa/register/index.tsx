@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import WebApp from '@twa-dev/sdk'
 import axios from 'axios'
-import Register from '@/src/components/twa/register/Register';
-import SelectAssociation from '@/src/components/twa/register/SelectAssociation';
-import DebugInfo from '@components/twa/DebugInfo';
+import SelectAssociation from '@components/twa/register/SelectAssociation'
+import Register from '@components/twa/register/Register'
+import DebugInfo from '@components/twa/DebugInfo'
 
 const showDebugInfo = import.meta.env.DEV
 
 type Stage = 'selectAssociation' | 'register'
 
-export default function Home() {
+const RegisterPage = () => {
   const [ stage, setStage ] = useState<Stage>('selectAssociation')
   const [ associations, setAssociations ] = useState([])
   const [ selectedAssociation, setSelectedAssociation ] = useState('')
@@ -56,3 +56,5 @@ export default function Home() {
     </main>
   )
 }
+
+export default RegisterPage
