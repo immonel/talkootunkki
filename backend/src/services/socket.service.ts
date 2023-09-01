@@ -3,16 +3,20 @@ import http from 'http';
 import { getCode } from './code.service';
 import { CorsOptions } from 'cors';
 import { getCurrentEvent, getEventDetails } from './event.service';
+import { parse } from 'cookie'
+import jwt from 'jsonwebtoken'
 
 const broadcastInterval = Number(process.env.WS_EVENT_BROADCAST_INTERVAL) || 5000
+const secret = process.env.JWT_SECRET_KEY || ''
 
 let io: Server;
 let cors: CorsOptions
 
 if (process.env.NODE_ENV === 'development') {
   cors = {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 }
 
@@ -20,15 +24,20 @@ export const socketConnection = (server: http.Server) => {
   io = new Server(server, { cors });
 
   io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
-
-    if (socket.handshake.query?.token === 'admin') {
-      socket.join('admin');
-      console.log(`Moved ${socket.id} to room 'admin'`)
-      socket.emit('UPDATE_CODE', getCode())
-    } else {
-      socket.join('other');
+    const cookie = socket.request.headers.cookie || ''
+    const { token } = parse(cookie)
+    
+    try {
+      jwt.verify(token, secret)
+    } catch (error) {
+      socket.join('other')
+      console.log('New client connected:', socket.id, '(other)');
+      return
     }
+
+    socket.join('admin');
+    console.log('New client connected:', socket.id, '(admin)');
+    socket.emit('UPDATE_CODE', getCode())
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
