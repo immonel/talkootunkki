@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import type { LeaderboardAssociation } from "@/src/types"
 import Leaderboard from "../common/Leaderboards"
-import { otherSocket } from "@/src/utils/socket"
+import { socket } from "@/src/utils/socket"
 
 const CurrentEvent = () => {
   const [ leaderboards, setLeaderboards ] = useState<LeaderboardAssociation[] | null>(null)
   const [ errorMessage, setErrorMessage ] = useState('Loading event data...')
 
   useEffect(() => {
-    otherSocket.on('CURRENT_EVENT', (data) => {
+    socket.on('CURRENT_EVENT', (data) => {
       if (!data) {
         setErrorMessage('Failed to load event data')
         return
@@ -16,10 +16,10 @@ const CurrentEvent = () => {
       setLeaderboards(data)
       setErrorMessage('')
     })
-    otherSocket.emit('CURRENT_EVENT')
+    socket.emit('CURRENT_EVENT')
 
     return () => {
-      otherSocket.off('CURRENT_EVENT')
+      socket.off('CURRENT_EVENT')
     }
   }, [])
 

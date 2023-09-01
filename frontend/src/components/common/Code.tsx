@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { adminSocket } from '@/src/utils/socket';
+import { socket } from '@/src/utils/socket';
 
 const generateQR = (code: string) => {
   const canvas = document.getElementById('qr-code')
@@ -12,14 +12,14 @@ const Code = () => {
   const [ code, setCode ] = useState('')
 
   useEffect(() => {
-    adminSocket.on('UPDATE_CODE', (code: string) => {
+    socket.on('UPDATE_CODE', (code: string) => {
       setCode(code)
       generateQR(code)
     })
-    adminSocket.emit('UPDATE_CODE')
+    socket.emit('UPDATE_CODE')
 
     return () => {
-      adminSocket.off('UPDATE_CODE');
+      socket.off('UPDATE_CODE');
     };
   }, [])
   

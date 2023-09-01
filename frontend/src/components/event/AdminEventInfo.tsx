@@ -3,7 +3,7 @@ import axios from "axios";
 import { AdminEventData } from "@/src/types";
 import Leaderboard from "@components/common/Leaderboards";
 import ParticipationList from "./ParticipationList";
-import { adminSocket } from "@/src/utils/socket";
+import { socket } from "@/src/utils/socket";
 import { useNavigate } from "react-router-dom";
 
 type EventProps = {
@@ -77,14 +77,14 @@ const AdminEventInfo = ({ event_id }: EventProps) => {
         console.log('Failed to fetch leaderboard data for event ', event_id, error)
       })
 
-    adminSocket.on('CURRENT_EVENT', (data) => {
+    socket.on('CURRENT_EVENT', (data) => {
       if (data?.event_id === event_id) {
         setEventData(data)
       }
     })
 
     return () => {
-      adminSocket.off('CURRENT_EVENT')
+      socket.off('CURRENT_EVENT')
     }
   }, [ event_id ])
 
