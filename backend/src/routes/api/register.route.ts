@@ -15,6 +15,7 @@ registrationRouter.post('/', async (request, response, next) => {
     const code = request.body.code
     const codeIsValid = validate(code)
     if (!codeIsValid) {
+      console.error('Invalid code entered', code)
       response.status(400).send('Invalid code')
       return
     }
@@ -22,6 +23,7 @@ registrationRouter.post('/', async (request, response, next) => {
     // Check integrity of telegram user data and get user data
     const userData = getUserData(request.body.initData)
     if (!userData) {
+      console.error('Invalid user data', request.body.initData)
       response.status(400).send('Invalid user data')
       return
     }
