@@ -54,37 +54,45 @@ registrationRouter.post('/', async (request, response, next) => {
  * in a running event and 400 otherwise
  */
 registrationRouter.post('/check', async (request, response, next) => {
-  const userData = getUserData(request.body.initData)
-  if (!userData) {
-    response.status(400).end()
-    return
+  try {
+    const userData = getUserData(request.body.initData)
+    if (!userData) {
+      response.status(400).end()
+      return
+    }
+    const currentEvent = await getCurrentEvent()
+    if (!currentEvent) {
+      response.status(400).end()
+      return
+    }
+    const loggedIn = await hasOpenParticipation(userData.id.toString(), currentEvent.event_id)
+    if (!loggedIn) {
+      response.status(400).end()
+      return
+    }
+    response.status(200).json(userData)
+  } catch (exception) {
+    next(exception)
   }
-  const currentEvent = await getCurrentEvent()
-  if (!currentEvent) {
-    response.status(400).end()
-    return
-  }
-  const loggedIn = await hasOpenParticipation(userData.id.toString(), currentEvent.event_id)
-  if (!loggedIn) {
-    response.status(400).end()
-    return
-  }
-  response.status(200).json(userData)
 })
 
 registrationRouter.post('/finish', async (request, response, next) => {
-  const userData = getUserData(request.body.initData)
-  if (!userData) {
-    response.status(400).end()
-    return
+  try {
+    const userData = getUserData(request.body.initData)
+    if (!userData) {
+      response.status(400).end()
+      return
+    }
+    const currentEvent = await getCurrentEvent()
+    if (!currentEvent) {
+      response.status(400).send('No event to finish')
+      return
+    }
+    await leaveEvent(currentEvent.event_id, userData.id.toString())
+    response.status(200).json(userData)
+  } catch (exception) {
+    next(exception)
   }
-  const currentEvent = await getCurrentEvent()
-  if (!currentEvent) {
-    response.status(400).send('No event to finish')
-    return
-  }
-  await leaveEvent(currentEvent.event_id, userData.id.toString())
-  response.status(200).json(userData)
 })
 
 registrationRouter.get('/associations', async (request, response, next) => {
