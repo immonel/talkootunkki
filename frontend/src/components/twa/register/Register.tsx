@@ -1,5 +1,4 @@
-"use client"
-import React, { ChangeEvent, FormEvent, SetStateAction, useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import WebApp from "@twa-dev/sdk"
 import { AxiosError, AxiosResponse } from "axios"
 import ErrorMessage from "../../common/ErrorMessage";
@@ -14,19 +13,18 @@ const toTruncatedUpperCase = (code: string) => (
 ).toUpperCase()
 
 type Props = {
-  code: string;
-  setCode: React.Dispatch<SetStateAction<string>>;
-  register: () => Promise<AxiosResponse<unknown, unknown>>;
+  submit: (code: string) => Promise<AxiosResponse<unknown, unknown>>;
 }
 
-const Register = ({ code, setCode, register }: Props) => {
+const Register = ({ submit }: Props) => {
+  const [ code, setCode ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState('')
 
   const setFormattedCode = (code: string) => setCode(toTruncatedUpperCase(code))
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    register()
+    submit(code)
       .then(() => {
         setErrorMessage('')
         setFormattedCode('')

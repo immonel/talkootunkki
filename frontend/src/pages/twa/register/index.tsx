@@ -13,10 +13,9 @@ const RegisterPage = () => {
   const [ stage, setStage ] = useState<Stage>('selectAssociation')
   const [ associations, setAssociations ] = useState([])
   const [ selectedAssociation, setSelectedAssociation ] = useState('')
-  const [ code, setCode ]   = useState('')
   const initData = WebApp.initData
   
-  const register = async () => {
+  const register = async (code: string) => {
     const url = '/api/register'
     return axios.post(url, { code, initData, association: selectedAssociation })
   }
@@ -32,9 +31,7 @@ const RegisterPage = () => {
       />,
     register:
       <Register
-        code={code}
-        setCode={setCode}
-        register={register}  
+        submit={register}
       />
   }
 
