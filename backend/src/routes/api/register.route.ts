@@ -3,6 +3,7 @@ import { getUserData } from '../../services/telegram.service';
 import { validate } from '../../services/code.service';
 import { hasOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
 import { getCurrentEvent, getCurrentEventAssociations } from '../../services/event.service';
+import { UserData } from '../../types';
 
 const registrationRouter = express.Router();
 
@@ -21,15 +22,20 @@ registrationRouter.post('/', async (request, response, next) => {
     }
 
     // Check integrity of telegram user data and get user data
-    const userData = getUserData(request.body.initData)
+    const userData: UserData | null = getUserData(request.body.initData)
     if (!userData) {
       console.error('Invalid user data', request.body.initData)
       response.status(400).send('Invalid user data')
       return
     }
 
+    const { email } = request.body
+    if (email) { // Do not overwrite old email with empty field
+      userData.email = email
+    }
+
     const [ user ] = await saveOrUpdateParticipantToDb(userData)
-    console.log('Saved user to database')
+    console.log('Saved user to database', user.dataValues)
     
     const currentEvent = await getCurrentEvent()
     if (!currentEvent) {

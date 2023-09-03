@@ -1,19 +1,21 @@
 import { Participant, Participation } from "../models";
-import { TelegramUserData } from "../types";
+import { UserData } from "../types";
 
-export const saveOrUpdateParticipantToDb = async (userData: TelegramUserData) => {
+export const saveOrUpdateParticipantToDb = async (userData: UserData) => {
   const {
     id,
     first_name,
     last_name,
-    username
+    username,
+    email
   } = userData
 
   return await Participant.upsert({
     user_id: id,
     first_name,
     last_name,
-    username
+    username,
+    email
   })
 }
   
