@@ -88,7 +88,7 @@ registrationRouter.post('/finish', async (request, response, next) => {
 
     const userData = getUserData(request.body.initData)
     if (!userData) {
-      response.status(400).end()
+      response.status(400).end('Invalid user data')
       return
     }
     const currentEvent = await getCurrentEvent()

@@ -31,9 +31,7 @@ const Register = ({ submit }: Props) => {
         window.location.href = '/twa'
       })
       .catch((error: AxiosError) => {
-        error.response?.status === 400
-          ? setErrorMessage('Invalid code')
-          : setErrorMessage('Server error')
+        setErrorMessage(error.response?.data as string || 'Server error')
       })
   }
 
