@@ -42,7 +42,7 @@ const RegisterPage = () => {
     WebApp.BackButton.show()
     WebApp.BackButton.onClick(() => location.href = "/twa")
 
-    axios.get('/api/events/current/associations')
+    axios.get('/api/register/associations')
       .then(response => setAssociations(response.data))
       .catch(error => console.log('Failed to fetch associations', error))
   }, [])

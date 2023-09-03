@@ -4,7 +4,6 @@ import {
   deleteEventById,
   getAllEvents,
   getCurrentEvent,
-  getCurrentEventAssociations,
   getEventDetails,
   getLatestEvent,
 } from '../../services/event.service';
@@ -66,19 +65,6 @@ eventsRouter.post('/', async (request, response, next) => {
     const event = request.body
     await Event.create(event)
     response.status(200).send('ok')
-  } catch (exception) {
-    next(exception)
-  }
-})
-
-eventsRouter.get('/current/associations', async (request, response, next) => {
-  try {
-    const associations = await getCurrentEventAssociations()
-    if (!associations.length) {
-      response.status(204).end()
-      return
-    }
-    response.status(200).json(associations)
   } catch (exception) {
     next(exception)
   }

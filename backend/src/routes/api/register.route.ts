@@ -2,7 +2,7 @@ import express from 'express'
 import { getUserData } from '../../services/telegram.service';
 import { validate } from '../../services/code.service';
 import { hasOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
-import { getCurrentEvent } from '../../services/event.service';
+import { getCurrentEvent, getCurrentEventAssociations } from '../../services/event.service';
 
 const registrationRouter = express.Router();
 
@@ -85,6 +85,19 @@ registrationRouter.post('/finish', async (request, response, next) => {
   }
   await leaveEvent(currentEvent.event_id, userData.id.toString())
   response.status(200).json(userData)
+})
+
+registrationRouter.get('/associations', async (request, response, next) => {
+  try {
+    const associations = await getCurrentEventAssociations()
+    if (!associations.length) {
+      response.status(204).end()
+      return
+    }
+    response.status(200).json(associations)
+  } catch (exception) {
+    next(exception)
+  }
 })
 
 export default registrationRouter
