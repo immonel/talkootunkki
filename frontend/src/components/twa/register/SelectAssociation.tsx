@@ -1,29 +1,35 @@
 import SelectWithAddOption from "@components/common/SelectWithAddOption";
-import React, { SetStateAction, FormEvent } from "react"
+import axios from "axios";
+import React, { FormEvent, useEffect, useState } from "react"
 
 const MAX_NAME_LENGTH = 32
 
 type Props = {
-  associations: string[];
-  selected: string;
-  setSelected: React.Dispatch<SetStateAction<string>>;
-  proceed: () => void;
+  onSubmit: (association: string) => void;
 }
 
-const SelectAssociation = ({ associations, selected, setSelected, proceed }: Props) => {
+const SelectAssociation = ({ onSubmit }: Props) => {
+  const [ associations, setAssociations ] = useState([])
+  const [ selected, setSelected ] = useState('')
+
+  useEffect(() => {
+    axios.get('/api/register/associations')
+      .then(response => setAssociations(response.data))
+      .catch(error => console.log('Failed to fetch associations', error))
+  }, [])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (selected === '__add__') {
       setSelected('')
     }
-    proceed()
+    onSubmit(selected)
   }
 
   const skip = (event: React.MouseEvent) => {
     event.preventDefault()
     setSelected('')
-    proceed()
+    onSubmit('')
   }
 
   return (

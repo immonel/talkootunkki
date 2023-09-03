@@ -11,37 +11,33 @@ type Stage = 'selectAssociation' | 'enterCode'
 
 const RegisterPage = () => {
   const [ stage, setStage ] = useState<Stage>('selectAssociation')
-  const [ associations, setAssociations ] = useState([])
-  const [ selectedAssociation, setSelectedAssociation ] = useState('')
+  const [ association, setAssociation ] = useState('')
   const initData = WebApp.initData
   
-  const register = async (code: string) => {
+  const handleSelectAssociationSubmit = (association: string) => {
+    setAssociation(association)
+    setStage('enterCode')
+  }
+
+  const handleRegisterSubmit = async (code: string) => {
     const url = '/api/register'
-    return axios.post(url, { code, initData, association: selectedAssociation })
+    return axios.post(url, { code, initData, association })
   }
   
-  const proceed = () => setStage('enterCode')
   const stages = {
     selectAssociation:
       <SelectAssociation
-        associations={associations}
-        selected={selectedAssociation}
-        setSelected={setSelectedAssociation}
-        proceed={proceed}
+        onSubmit={handleSelectAssociationSubmit}
       />,
     enterCode:
       <EnterCode
-        submit={register}
+        onSubmit={handleRegisterSubmit}
       />
   }
 
   useEffect(() => {
     WebApp.BackButton.show()
     WebApp.BackButton.onClick(() => location.href = "/twa")
-
-    axios.get('/api/register/associations')
-      .then(response => setAssociations(response.data))
-      .catch(error => console.log('Failed to fetch associations', error))
   }, [])
     
   return (

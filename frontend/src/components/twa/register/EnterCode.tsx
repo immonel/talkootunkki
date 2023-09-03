@@ -13,10 +13,10 @@ const toTruncatedUpperCase = (code: string) => (
 ).toUpperCase()
 
 type Props = {
-  submit: (code: string) => Promise<AxiosResponse<unknown, unknown>>;
+  onSubmit: (code: string) => Promise<AxiosResponse<unknown, unknown>>;
 }
 
-const EnterCode = ({ submit }: Props) => {
+const EnterCode = ({ onSubmit }: Props) => {
   const [ code, setCode ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState('')
 
@@ -24,7 +24,7 @@ const EnterCode = ({ submit }: Props) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    submit(code)
+    onSubmit(code)
       .then(() => {
         setErrorMessage('')
         setFormattedCode('')

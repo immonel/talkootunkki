@@ -23,7 +23,7 @@ const FinishPage = () => {
     <main className="mt-10 text-center">
       Sign out of Village Cleanup
       <EnterCode
-        submit={finish}  
+        onSubmit={finish}
       />
       { showDebugInfo && <DebugInfo /> }
     </main>
