@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import WebApp from '@twa-dev/sdk'
 import axios from 'axios'
 import SelectAssociation from '@components/twa/register/SelectAssociation'
-import Register from '@components/twa/register/Register'
+import EnterCode from '@components/twa/register/EnterCode'
 import DebugInfo from '@components/twa/DebugInfo'
 
 const showDebugInfo = import.meta.env.DEV
 
-type Stage = 'selectAssociation' | 'register'
+type Stage = 'selectAssociation' | 'enterCode'
 
 const RegisterPage = () => {
   const [ stage, setStage ] = useState<Stage>('selectAssociation')
@@ -20,7 +20,7 @@ const RegisterPage = () => {
     return axios.post(url, { code, initData, association: selectedAssociation })
   }
   
-  const proceed = () => setStage('register')
+  const proceed = () => setStage('enterCode')
   const stages = {
     selectAssociation:
       <SelectAssociation
@@ -29,8 +29,8 @@ const RegisterPage = () => {
         setSelected={setSelectedAssociation}
         proceed={proceed}
       />,
-    register:
-      <Register
+    enterCode:
+      <EnterCode
         submit={register}
       />
   }
@@ -45,11 +45,10 @@ const RegisterPage = () => {
   }, [])
     
   return (
-    <main>
-      <div className="place-items-center">
-        { stages[stage] }
-        { showDebugInfo && <DebugInfo /> }
-      </div>
+    <main className="mt-10 text-center">
+      Register to Village Cleanup
+      { stages[stage] }
+      { showDebugInfo && <DebugInfo /> }
     </main>
   )
 }

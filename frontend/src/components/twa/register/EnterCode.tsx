@@ -16,7 +16,7 @@ type Props = {
   submit: (code: string) => Promise<AxiosResponse<unknown, unknown>>;
 }
 
-const Register = ({ submit }: Props) => {
+const EnterCode = ({ submit }: Props) => {
   const [ code, setCode ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState('')
 
@@ -52,12 +52,11 @@ const Register = ({ submit }: Props) => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center my-5">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-60 mt-10 gap-3 text-center"
+        className="flex flex-col w-60 gap-3 text-center"
       >
-        Register to Village Cleanup
         <input
           value={code}
           onChange={handleChange}
@@ -65,7 +64,7 @@ const Register = ({ submit }: Props) => {
         />
         { errorMessage && <ErrorMessage message={errorMessage} /> }
         <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
-          Register
+          Submit
         </button>
       </form>
 
@@ -79,4 +78,4 @@ const Register = ({ submit }: Props) => {
   )
 }
 
-export default Register
+export default EnterCode

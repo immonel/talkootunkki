@@ -14,6 +14,7 @@ import EventAdminPage from '../pages/admin/event'
 import LoginPage from '../pages/login'
 import LogoutPage from '../pages/logout'
 import RequireAuth from './RequireAuth'
+import FinishPage from '../pages/twa/finish'
 
 const Router = () => (
   <BrowserRouter>
@@ -29,6 +30,7 @@ const Router = () => (
       <Route element={<TWALayout />}>
         <Route path='/twa' element={<TelegramWebApp />} />
         <Route path='/twa/register' element={<RegisterPage />} />
+        <Route path='/twa/finish' element={<FinishPage />} />
         <Route path='/twa/leaderboards' element={<TWALeaderboardPage />} />
       </Route>
       <Route element={

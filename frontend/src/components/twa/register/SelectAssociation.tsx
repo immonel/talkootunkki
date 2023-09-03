@@ -30,7 +30,7 @@ const SelectAssociation = ({ associations, selected, setSelected, proceed }: Pro
     <div className="flex flex-col items-center">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-60 mt-10 gap-3 text-center"
+        className="flex flex-col w-60 mt-5 gap-3 text-center"
       >
         Select association
         <small>You can help your association win the competition!</small>
