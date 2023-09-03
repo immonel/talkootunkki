@@ -78,6 +78,14 @@ registrationRouter.post('/check', async (request, response, next) => {
 
 registrationRouter.post('/finish', async (request, response, next) => {
   try {
+    const code = request.body.code
+    const codeIsValid = validate(code)
+    if (!codeIsValid) {
+      console.error('Invalid code entered', code)
+      response.status(400).send('Invalid code')
+      return
+    }
+
     const userData = getUserData(request.body.initData)
     if (!userData) {
       response.status(400).end()
