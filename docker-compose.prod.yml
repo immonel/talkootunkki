@@ -4,6 +4,7 @@ services:
   talkootunkki:
     build: .
     container_name: talkootunkki
+    restart: always
     depends_on:
       - postgres
     environment:

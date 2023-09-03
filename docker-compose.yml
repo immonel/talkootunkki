@@ -4,6 +4,7 @@ services:
   talkootunkki_frontend:
     build: ./frontend
     container_name: talkootunkki_frontend-dev
+    restart: always
     environment:
       VITE_BACKEND_URL: ${BACKEND_URL}
     volumes:
@@ -14,6 +15,7 @@ services:
   talkootunkki_backend:
     build: ./backend
     container_name: talkootunkki_backend-dev
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
