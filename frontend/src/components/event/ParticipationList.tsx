@@ -26,6 +26,8 @@ const ParticipationListItem = ({ participation }: ParticipationListItemProps) =>
   const startDate = new Date(start_date)
   const endDate   = new Date(end_date || Date.now())
   const totalTime = endDate.getTime() - startDate.getTime()
+  const running = !end_date
+  const borderColor = running ? 'border-green-600' : 'border-gray-500'
 
   const handleDelete = () => {
     if (window.confirm('Are you sure?')) {
@@ -35,11 +37,11 @@ const ParticipationListItem = ({ participation }: ParticipationListItemProps) =>
 
   return (
     <li className="flex flex-row justify-between text-gray-900">
-      <div className="px-4 py-3 flex items-center justify-between w-full">
-        <div className="flex flex-col">
+      <div className="px-3 py-3 flex items-center justify-between w-full">
+        <div className={`flex flex-col border-l-4 pl-4 ${borderColor}`}>
           <span className="text-sm">{association || 'No association'}</span>
           <span className="text-sm text-gray-600">{first_name} {last_name}</span>
-          <span className="text-sm text-gray-600">@{username}</span>
+          <span className="text-sm text-gray-600">{username && `@${username}`}</span>
           <span className="text-sm text-gray-600">{email}</span>
         </div>
         <div className="flex flex-col items-end">
