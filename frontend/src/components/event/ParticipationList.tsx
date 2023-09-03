@@ -16,6 +16,10 @@ const deleteParticipation = (participation_id: string) => (
     .catch(error => console.log('Failed to delete participation', participation_id, error))
 )
 
+const sortByStartDate = (a: ParticipationWithParticipant, b: ParticipationWithParticipant) => (
+  new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+)
+
 const ParticipationListItem = ({ participation }: ParticipationListItemProps) => {
   const { start_date, end_date, association, participation_id } = participation
   const { first_name, last_name, username, email } = participation.Participant
@@ -60,7 +64,7 @@ const ParticipationList = ({ participations }: Props) => (
     <h2 className="text-2xl font-semibold mb-4">Participations</h2>
     <div className="w-full bg-white rounded-lg shadow">
       <ul className="divide-y divide-gray-200">
-        {participations.map((participation, index) => (
+        {participations.sort(sortByStartDate).map((participation, index) => (
           <ParticipationListItem key={index} participation={participation} />
         ))}
       </ul>
