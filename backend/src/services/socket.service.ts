@@ -49,7 +49,9 @@ export const socketConnection = (server: http.Server) => {
 }
 
 const broadcastClientCount = () => {
-  io.to('admin').emit('WS_CLIENT_COUNT', io.engine.clientsCount)
+  const admin = io.sockets.adapter.rooms.get('admin')?.size || 0
+  const other = io.sockets.adapter.rooms.get('other')?.size || 0
+  io.to('admin').emit('WS_CLIENT_COUNT', { admin, other })
 }
 
 export const broadcastCode = () =>

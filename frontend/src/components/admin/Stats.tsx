@@ -1,11 +1,19 @@
 import { socket } from "@/src/utils/socket"
 import { useEffect, useState } from "react"
 
+type ClientCount = {
+  admin: number;
+  other: number;
+}
+
 const Stats = () => {
-  const [ clientCount, setClientCount ] = useState(NaN)
+  const [ clientCount, setClientCount ] = useState<ClientCount>({
+    admin: NaN,
+    other: NaN
+  })
 
   useEffect(() => {
-    socket.on('WS_CLIENT_COUNT', count => setClientCount(count))
+    socket.on('WS_CLIENT_COUNT', counts => setClientCount(counts))
 
     return () => {
       socket.off('WS_CLIENT_COUNT')
@@ -13,7 +21,13 @@ const Stats = () => {
   }, [])
 
   return (
-    <p>WebSocket clients: {clientCount}</p>
+    <div>
+      <ul className="p-3 bg-white rounded-lg shadow text-black">
+        <p>WebSocket clients</p>
+        <li className="text-sm">Admin: {clientCount.admin}</li>
+        <li className="text-sm">Other: {clientCount.other}</li>
+      </ul>
+    </div>
   )
 }
 
