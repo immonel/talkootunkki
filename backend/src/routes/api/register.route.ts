@@ -3,7 +3,8 @@ import { getUserData } from '../../services/telegram.service';
 import { validate } from '../../services/code.service';
 import { hasOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
 import { getCurrentEvent, getCurrentEventAssociations } from '../../services/event.service';
-import { UserData } from '../../types';
+import { GoogleSheetsRow, UserData } from '../../types';
+import { uploadParticipationToSheets } from '../../services/google.service';
 
 const registrationRouter = express.Router();
 
@@ -44,12 +45,15 @@ registrationRouter.post('/', async (request, response, next) => {
     }
     const association: string | undefined = request.body.association || undefined
     const participation = await joinEvent(currentEvent.event_id, user.user_id, association)
-
-    // setTimeout(async () => {
-    //   await leaveEvent(currentEvent.event_id, user.user_id)
-    // }, 30000)
     
-    response.status(200).send('nauraa')
+    // Upload the participation to sheets
+    const googleSheetsRow: GoogleSheetsRow = {
+      ...user?.dataValues,
+      ...participation?.dataValues
+    } as GoogleSheetsRow
+    uploadParticipationToSheets(googleSheetsRow)
+    
+    response.status(200).json(userData)
   } catch (exception) {
     next(exception)
   }
@@ -102,7 +106,17 @@ registrationRouter.post('/finish', async (request, response, next) => {
       response.status(400).send('No event to finish')
       return
     }
-    await leaveEvent(currentEvent.event_id, userData.id.toString())
+    const [ affectedRowCount, affectedRows ] = await leaveEvent(currentEvent.event_id, userData.id.toString())
+    
+    // Upload the participation to sheets
+    if (affectedRowCount) {
+      const googleSheetsRow: GoogleSheetsRow = {
+        ...affectedRows[0].dataValues
+      } as GoogleSheetsRow
+      uploadParticipationToSheets(googleSheetsRow)
+    }
+    console.log('Finished participation for user', userData.id)
+      
     response.status(200).json(userData)
   } catch (exception) {
     next(exception)

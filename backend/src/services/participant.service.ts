@@ -56,7 +56,8 @@ export const leaveEvent = async (event_id: string, user_id: string) => {
       event_id,
       user_id,
       end_date: null
-    }
+    },
+    returning: true
   })
 }
 
