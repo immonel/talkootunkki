@@ -26,27 +26,30 @@ export const socketConnection = (server: http.Server) => {
   io.on('connection', (socket) => {
     const cookie = socket.request.headers.cookie || ''
     const { token } = parse(cookie)
+    let room = 'other'
     
     try {
       jwt.verify(token, secret)
+      room = 'admin'
     } catch (error) {
-      socket.join('other')
-      console.log('New client connected:', socket.id, '(other)');
-      return
+      room = 'other'
     }
 
-    socket.join('admin');
-    console.log('New client connected:', socket.id, '(admin)');
-    socket.emit('UPDATE_CODE', getCode())
+    socket.join(room)
+    broadcastClientCount()
 
-    socket.on("disconnect", () => {
-      console.log("Client disconnected");
-    });
+    socket.on('disconnect', () => {
+      broadcastClientCount()
+    })
     
     // TODO send to socket only?
     socket.on('CURRENT_EVENT', broadcastCurrentEvent)
     socket.on('UPDATE_CODE', broadcastCode)
   })
+}
+
+const broadcastClientCount = () => {
+  io.to('admin').emit('WS_CLIENT_COUNT', io.engine.clientsCount)
 }
 
 export const broadcastCode = () =>
