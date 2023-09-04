@@ -18,14 +18,14 @@
   font-family: 'Zona Pro Bold';
   font-style: normal;
   font-weight: 400;
-  src: url('../public/fonts/ZonaPro-Bold.otf') format('opentype');
+  src: url('/fonts/ZonaPro-Bold.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'Zona Pro Thin';
   font-style: normal;
   font-weight: 400;
-  src: url('../public/fonts/ZonaPro-Thin.otf') format('opentype');
+  src: url('/fonts/ZonaPro-Thin.otf') format('opentype');
 }
 
 body {
