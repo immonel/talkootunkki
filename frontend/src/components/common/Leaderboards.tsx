@@ -21,21 +21,24 @@ const LeaderboardRow = ({ association, index }: LeaderboardRowProps) => {
     'text-amber-800'
   ]
   return (
-    <li className="px-4 py-3 flex items-center justify-between">
-    <div className="flex items-center">
-      <span className={`text-sm font-medium ${colourMap[index] || 'text-gray-900'}`}>{index + 1}.</span>
-      <span className="ml-2 text-sm text-gray-600">{association.name}</span>
-    </div>
-    <span className="text-sm font-medium text-gray-900">{toTimeString(association.totalTime, 'HHMM')}</span>
+    <li className="
+      px-4 py-3 flex items-center justify-between
+      text-gray-700 dark:text-gray-300
+    ">
+      <div className="flex items-center">
+        <span className={`text-sm w-5 font-medium ${colourMap[index]}`}>{index + 1}.</span>
+        <span className="ml-2 text-sm">{association.name}</span>
+      </div>
+      <span className="text-sm font-medium">{toTimeString(association.totalTime, 'HHMM')}</span>
     </li>
   )
 }
 
 const Leaderboard = ({ data }: LeaderboardProps) => (
-  <div className="flex flex-col items-center w-10/12">
-    <h2 className="text-2xl font-semibold mb-4">Leaderboard</h2>
-    <div className="w-full max-w-md bg-white rounded-lg shadow">
-      <ul className="divide-y divide-gray-200">
+  <div className="flex flex-col items-center w-11/12">
+    <h2 className="text-2xl font-semibold mb-4">Leaderboards</h2>
+    <div className="w-full max-w-md bg-gray-200 dark:bg-gray-700 rounded-lg shadow">
+      <ul className="divide-y divide-gray-300 dark:divide-gray-600">
         {data.sort(sortByTime).map((association, index) => (
           <LeaderboardRow key={index} association={association} index={index} />
         ))}

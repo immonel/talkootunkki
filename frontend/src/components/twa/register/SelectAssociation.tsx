@@ -50,7 +50,10 @@ const SelectAssociation = ({ onSubmit }: Props) => {
         <button disabled={selected === '__add__'} className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
           Submit
         </button>
-        <button onClick={skip} className="bg-slate-700 hover:bg-slate-800 rounded-xl p-4 w-full">
+        <button onClick={skip} className="
+          rounded-xl p-4 w-full
+          bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800
+        ">
           Skip
         </button>
       </form>

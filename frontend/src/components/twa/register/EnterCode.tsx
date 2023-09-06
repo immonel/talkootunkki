@@ -61,17 +61,25 @@ const EnterCode = ({ onSubmit, onSuccess }: Props) => {
         <input
           value={code}
           onChange={handleChange}
-          className="w-full rounded-xl bg-gray-800 p-3 text-4xl text-center"
-        />
+          className="
+            w-full rounded-xl p-3 text-4xl text-center
+            bg-gray-200 dark:bg-gray-800
+          "/>
         { errorMessage && <ErrorMessage message={errorMessage} /> }
-        <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
+        <button className="
+          rounded-xl p-4 w-full
+          bg-cs-orange hover:bg-amber-700
+        ">
           Submit
         </button>
       </form>
 
       <button
         onClick={openQrScanPopup}
-        className="bg-cs-orange hover:bg-amber-700 rounded-xl m-20 p-5"
+        className="
+          rounded-xl m-10 p-5
+          bg-cs-orange hover:bg-amber-700
+        "
       >
         <i className="bi-qr-code-scan text-5xl" />
       </button>

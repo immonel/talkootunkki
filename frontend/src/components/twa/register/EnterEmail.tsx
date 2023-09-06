@@ -42,12 +42,20 @@ const EnterEmail = ({ onSubmit }: Props) => {
           value={email}
           type='email'
           onChange={handleChange}
-          className="w-full rounded-xl bg-gray-800 p-3 text-xl text-center"
-        />
-        <button className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full">
+          className="
+            w-full rounded-xl p-3 text-xl text-center
+            bg-gray-200 dark:bg-gray-800
+          "/>
+        <button className="
+          rounded-xl p-4 w-full
+          bg-cs-orange hover:bg-amber-700
+        ">
           Submit
         </button>
-        <button onClick={skip} className="bg-slate-700 hover:bg-slate-800 rounded-xl p-4 w-full">
+        <button onClick={skip} className="
+          rounded-xl p-4 w-full
+          bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800
+        ">
           Skip
         </button>
       </form>

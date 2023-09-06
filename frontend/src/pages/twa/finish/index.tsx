@@ -26,7 +26,7 @@ const FinishPage = () => {
     
   return (
     <main className="mt-10 text-center">
-      Sign out of Village Cleanup
+      Check out of Village Cleanup
       <EnterCode
         onSubmit={finish}
         onSuccess={handleSuccessfulFinish}

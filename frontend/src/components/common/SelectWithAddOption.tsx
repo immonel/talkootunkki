@@ -48,7 +48,10 @@ const SelectWithAddOption = ({ options, selected, setSelected, maxLength }: Prop
   return (
     <div className="w-full">
       <select
-        className="w-full rounded-xl bg-gray-800 p-4 text-xl text-center"
+        className="
+          w-full rounded-xl p-4 text-xl text-center
+          bg-gray-200 dark:bg-gray-800
+        "
         value={selected}
         onChange={handleChange}
       >
@@ -64,7 +67,10 @@ const SelectWithAddOption = ({ options, selected, setSelected, maxLength }: Prop
       {newOptionInputOpen && (
         <div className="mt-2">
           <input
-            className="bg-gray-800 w-full p-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+            className="
+              w-full p-2 rounded-md shadow-sm focus:outline-none
+              bg-gray-200 dark:bg-gray-800 border-gray-300 focus:border-cs-orange
+            "
             placeholder="Enter a new option"
             value={newOption}
             onChange={handleNewOptionChange}

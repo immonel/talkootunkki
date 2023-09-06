@@ -24,7 +24,7 @@ const TelegramWebApp = () => {
   }, [ initData ])
 
   return (
-    <div className='flex flex-col w-full mt-10 items-center'>
+    <div className='flex flex-col w-full items-center'>
       { 
         !loading &&
         (loggedIn ? <LoggedIn /> : <FrontPage />)

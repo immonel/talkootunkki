@@ -24,7 +24,7 @@ const CurrentEvent = () => {
   }, [])
 
   return (
-    <main className='flex flex-col w-full min-h-screen mt-10 items-center'>
+    <main className='flex flex-col w-full min-h-screen items-center'>
       {
         leaderboards
           ? <Leaderboard data={leaderboards} />
