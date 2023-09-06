@@ -15,7 +15,7 @@ const RegisterPage = () => {
   const [ association, setAssociation ] = useState('')
   const [ email, setEmail ] = useState('')
   const initData = WebApp.initData
-  const { username } = WebApp.initDataUnsafe.user || {}
+  const { username, first_name, last_name } = WebApp.initDataUnsafe.user || {}
   
   const handleSelectAssociationSubmit = (association: string) => {
     setAssociation(association)
@@ -35,6 +35,18 @@ const RegisterPage = () => {
     const url = '/api/register'
     return axios.post(url, { code, initData, association, email })
   }
+
+  const handleSuccessfulRegistration = async () => {
+    window.localStorage.setItem('participation', JSON.stringify({
+      association,
+      first_name,
+      last_name,
+      username,
+      email,
+      start_date: Date.now()
+    }))
+    window.location.href = '/twa'
+  }
   
   const stages = {
     selectAssociation:
@@ -48,6 +60,7 @@ const RegisterPage = () => {
     enterCode:
       <EnterCode
         onSubmit={handleRegisterSubmit}
+        onSuccess={handleSuccessfulRegistration}
       />
   }
 

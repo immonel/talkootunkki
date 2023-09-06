@@ -14,9 +14,10 @@ const toTruncatedUpperCase = (code: string) => (
 
 type Props = {
   onSubmit: (code: string) => Promise<AxiosResponse<unknown, unknown>>;
+  onSuccess: () => void;
 }
 
-const EnterCode = ({ onSubmit }: Props) => {
+const EnterCode = ({ onSubmit, onSuccess }: Props) => {
   const [ code, setCode ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState('')
 
@@ -28,7 +29,7 @@ const EnterCode = ({ onSubmit }: Props) => {
       .then(() => {
         setErrorMessage('')
         setFormattedCode('')
-        window.location.href = '/twa'
+        onSuccess()
       })
       .catch((error: AxiosError) => {
         setErrorMessage(error.response?.data as string || 'Server error')

@@ -14,6 +14,11 @@ const FinishPage = () => {
     return axios.post(url, { code, initData })
   }
 
+  const handleSuccessfulFinish = () => {
+    window.localStorage.clear()
+    window.location.href = '/twa'
+  }
+
   useEffect(() => {
     WebApp.BackButton.show()
     WebApp.BackButton.onClick(() => location.href = "/twa")
@@ -24,6 +29,7 @@ const FinishPage = () => {
       Sign out of Village Cleanup
       <EnterCode
         onSubmit={finish}
+        onSuccess={handleSuccessfulFinish}
       />
       { showDebugInfo && <DebugInfo /> }
     </main>
