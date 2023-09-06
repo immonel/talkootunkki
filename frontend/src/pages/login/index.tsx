@@ -38,6 +38,7 @@ const LoginPage = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autoFocus
           />
         </div>
         <div className="mb-6">
