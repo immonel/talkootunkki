@@ -63,7 +63,7 @@ const ParticipationListItem = ({ participation }: ParticipationListItemProps) =>
 
 const ParticipationList = ({ participations }: Props) => (
   <div className="flex flex-col items-center w-10/12">
-    <h2 className="text-2xl font-semibold mb-4">Participations</h2>
+    <h2 className="text-2xl font-semibold mb-8">Participations</h2>
     <div className="w-full bg-white rounded-lg shadow">
       <ul className="divide-y divide-gray-200">
         {participations.sort(sortByStartDate).map((participation, index) => (

@@ -53,11 +53,13 @@ const EnterCode = ({ onSubmit, onSuccess }: Props) => {
   }
 
   return (
-    <div className="flex flex-col items-center my-5">
+    <div className="flex flex-col items-center">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-60 gap-3 text-center"
+        className="flex flex-col w-60 gap-3 mt-5 text-center"
       >
+        <p>Enter one-time code</p>
+        <small>The code is available at the starting point</small>
         <input
           value={code}
           onChange={handleChange}

@@ -72,10 +72,12 @@ const RegisterPage = () => {
   }, [ navigate ])
     
   return (
-    <main className="mt-10 text-center">
+    <main className="mt-3 text-center">
       Register to Village Cleanup
-      { stages[stage] }
-      { showDebugInfo && <DebugInfo /> }
+      <div className="mt-2">
+        { stages[stage] }
+        { showDebugInfo && <DebugInfo /> }
+      </div>
     </main>
   )
 }

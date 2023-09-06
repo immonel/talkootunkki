@@ -27,7 +27,7 @@ const FinishPage = () => {
   }, [ navigate ])
     
   return (
-    <main className="mt-10 text-center">
+    <main className="mt-3 text-center">
       Check out of Village Cleanup
       <EnterCode
         onSubmit={finish}

@@ -12,7 +12,7 @@ const TWALeaderboardPage = () => {
   }, [ navigate ])
 
   return (
-    <main className='flex flex-col w-full min-h-screen mt-5 items-center'>
+    <main className='flex flex-col w-full min-h-screen mt-2 items-center'>
       <CurrentEvent />
     </main>
   )
