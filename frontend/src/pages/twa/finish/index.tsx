@@ -3,11 +3,13 @@ import WebApp from '@twa-dev/sdk'
 import axios from 'axios'
 import EnterCode from '@components/twa/register/EnterCode'
 import DebugInfo from '@components/twa/DebugInfo'
+import { useNavigate } from 'react-router-dom'
 
 const showDebugInfo = import.meta.env.DEV
 
 const FinishPage = () => {
   const initData = WebApp.initData
+  const navigate = useNavigate()
   
   const finish = async (code: string) => {
     const url = '/api/register/finish'
@@ -16,13 +18,13 @@ const FinishPage = () => {
 
   const handleSuccessfulFinish = () => {
     window.localStorage.clear()
-    window.location.href = '/twa'
+    navigate('/twa')
   }
 
   useEffect(() => {
     WebApp.BackButton.show()
-    WebApp.BackButton.onClick(() => location.href = "/twa")
-  }, [])
+    WebApp.BackButton.onClick(() => navigate("/twa"))
+  }, [ navigate ])
     
   return (
     <main className="mt-10 text-center">

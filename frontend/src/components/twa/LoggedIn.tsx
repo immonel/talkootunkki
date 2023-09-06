@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import LoginInfoCard from "./LoginInfoCard";
+import { useNavigate } from "react-router-dom";
 
 const LoggedIn = () => {
   const participation = JSON.parse(window.localStorage.getItem('participation') || '')
   const { start_date } = participation
   const [ elapsedTime, setElapsedTime ] = useState(Date.now() - start_date)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,20 +26,20 @@ const LoggedIn = () => {
         qualify for the competition!
       </small>
       <div className="flex flex-col w-80 gap-3 items-center">
-        <a
-          href='/twa/finish'
+        <button
+          onClick={() => navigate('/twa/finish')}
           className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-11/12 text-center"
         >
           🚪 Check out
-        </a>
-        <a
-          href='/twa/leaderboards'
+        </button>
+        <button
+          onClick={() => navigate('/twa/leaderboards')}
           className="
             rounded-xl p-4 w-11/12 text-center
             bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800
           ">
           🏆 Leaderboards
-        </a>
+        </button>
       </div>
     </div>
   )

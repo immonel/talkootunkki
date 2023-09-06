@@ -5,6 +5,7 @@ import SelectAssociation from '@components/twa/register/SelectAssociation'
 import EnterCode from '@components/twa/register/EnterCode'
 import DebugInfo from '@components/twa/DebugInfo'
 import EnterEmail from '@components/twa/register/EnterEmail'
+import { useNavigate } from 'react-router-dom'
 
 const showDebugInfo = import.meta.env.DEV
 
@@ -16,6 +17,7 @@ const RegisterPage = () => {
   const [ email, setEmail ] = useState('')
   const initData = WebApp.initData
   const { username, first_name, last_name } = WebApp.initDataUnsafe.user || {}
+  const navigate = useNavigate()
   
   const handleSelectAssociationSubmit = (association: string) => {
     setAssociation(association)
@@ -45,7 +47,7 @@ const RegisterPage = () => {
       email,
       start_date: Date.now()
     }))
-    window.location.href = '/twa'
+    navigate('/twa')
   }
   
   const stages = {
@@ -66,8 +68,8 @@ const RegisterPage = () => {
 
   useEffect(() => {
     WebApp.BackButton.show()
-    WebApp.BackButton.onClick(() => location.href = "/twa")
-  }, [])
+    WebApp.BackButton.onClick(() => navigate("/twa"))
+  }, [ navigate ])
     
   return (
     <main className="mt-10 text-center">

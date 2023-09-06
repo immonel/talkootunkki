@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EventForm = () => {
   const [eventName, setEventName] = useState('');
@@ -7,6 +8,7 @@ const EventForm = () => {
   const [startTime, setStartTime] = useState('');
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
+  const navigate = useNavigate()
 
   const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
@@ -29,7 +31,7 @@ const EventForm = () => {
     await axios.post('/api/events', event)
       .catch((error) => console.log('Error submitting event', error))
     console.log('Event submitted successfully')
-    window.location.href = '/admin'
+    navigate('/admin')
   }
 
   return (
