@@ -15,6 +15,7 @@ import LoginPage from '../pages/login'
 import LogoutPage from '../pages/logout'
 import RequireAuth from './RequireAuth'
 import FinishPage from '../pages/twa/finish'
+import NotFound from '../pages/404'
 
 const Router = () => (
   <BrowserRouter>
@@ -42,6 +43,7 @@ const Router = () => (
         <Route path='/admin/create_event' element={<CreateEventPage />} />
         <Route path='/admin/event/:event_id' element={<EventAdminPage />} />
       </Route>
+      <Route path='*' element={<NotFound />} />
     </Routes>
   </BrowserRouter>
 )
