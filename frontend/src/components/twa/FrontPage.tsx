@@ -30,6 +30,13 @@ const FrontPage = () => {
         >
           🏆 Leaderboards
         </button>
+        <button
+          onClick={() => navigate('/twa/prizes')}
+          className="rounded-xl p-4 w-full
+          bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800"
+        >
+          🏅 Prizes
+        </button>
       </div>
     </main>
   )

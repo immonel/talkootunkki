@@ -16,6 +16,7 @@ import LogoutPage from '../pages/logout'
 import RequireAuth from './RequireAuth'
 import FinishPage from '../pages/twa/finish'
 import NotFound from '../pages/404'
+import PrizesPage from '../pages/twa/prizes'
 
 const Router = () => (
   <BrowserRouter>
@@ -33,6 +34,7 @@ const Router = () => (
         <Route path='/twa/register' element={<RegisterPage />} />
         <Route path='/twa/finish' element={<FinishPage />} />
         <Route path='/twa/leaderboards' element={<TWALeaderboardPage />} />
+        <Route path='/twa/prizes' element={<PrizesPage />} />
       </Route>
       <Route element={
         <RequireAuth>
