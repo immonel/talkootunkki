@@ -45,6 +45,7 @@ export const socketConnection = (server: http.Server) => {
     // TODO send to socket only?
     socket.on('CURRENT_EVENT', broadcastCurrentEvent)
     socket.on('UPDATE_CODE', broadcastCode)
+    socket.on('WS_CLIENT_COUNT', broadcastClientCount)
   })
 }
 

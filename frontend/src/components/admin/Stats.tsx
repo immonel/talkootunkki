@@ -14,6 +14,7 @@ const Stats = () => {
 
   useEffect(() => {
     socket.on('WS_CLIENT_COUNT', counts => setClientCount(counts))
+    socket.emit('WS_CLIENT_COUNT')
 
     return () => {
       socket.off('WS_CLIENT_COUNT')
