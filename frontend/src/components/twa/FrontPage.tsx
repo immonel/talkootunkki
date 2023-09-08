@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom"
 
+const tgLink = import.meta.env.VITE_TELEGRAM_GROUP_LINK || ''
+
 const Banner = () => (
   <div className="flex items-center gap-5">
     <img className="invert dark:invert-0 w-16 pr-3 border-r" src="/campussection.png" />
@@ -23,6 +25,18 @@ const FrontPage = () => {
         >
           🧹 Register
         </button>
+        {
+          tgLink && 
+            <a
+              href={tgLink}
+              className="
+                rounded-xl p-4 w-full text-center
+                bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600
+              "
+            >
+              Join the Telegram group
+            </a>
+        }
         <button
           onClick={() => navigate('/twa/leaderboards')}
           className="rounded-xl p-4 w-full

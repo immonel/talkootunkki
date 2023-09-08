@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import LoginInfoCard from "./LoginInfoCard";
 import { useNavigate } from "react-router-dom";
 
+const tgLink = import.meta.env.VITE_TELEGRAM_GROUP_LINK
+
 const LoggedIn = () => {
   const participation = JSON.parse(window.localStorage.getItem('participation') || '')
   const { start_date } = participation
@@ -32,6 +34,18 @@ const LoggedIn = () => {
         >
           🚪 Check out
         </button>
+        {
+          tgLink && 
+            <a
+              href={tgLink}
+              className="
+                rounded-xl p-4 w-full text-center
+                bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600
+              "
+            >
+              Join the Telegram group
+            </a>
+        }
         <button
           onClick={() => navigate('/twa/leaderboards')}
           className="
