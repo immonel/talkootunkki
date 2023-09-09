@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { socket } from '@/src/utils/socket';
 
+const TG_URL = 'https://t.me/TalkooBot?code='
+
 const generateQR = (code: string) => {
   const canvas = document.getElementById('qr-code')
   QRCode.toCanvas(canvas, code);
@@ -14,7 +16,7 @@ const Code = () => {
   useEffect(() => {
     socket.on('UPDATE_CODE', (code: string) => {
       setCode(code)
-      generateQR(code)
+      generateQR(`${TG_URL}${code}`)
     })
     socket.emit('UPDATE_CODE')
 

@@ -41,7 +41,7 @@ const EnterCode = ({ onSubmit, onSuccess }: Props) => {
   }
   
   const qrScanCallback = (code: string) => {
-    setFormattedCode(code)
+    setFormattedCode(code.slice(-6))
     WebApp.closeScanQrPopup()
   }
 
