@@ -39,7 +39,7 @@ const LoggedIn = () => {
             <a
               href={tgLink}
               className="
-                rounded-xl p-4 w-full text-center
+                rounded-xl p-4 w-11/12 text-center
                 bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600
               "
             >
