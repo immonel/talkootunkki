@@ -54,22 +54,22 @@ services:
       - 80:80
       - 443:443
 
-  certbot:
-    image: certbot/certbot
-    container_name: talkootunkki_certbot
-    restart: always
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    command: >
-      renew
-        --webroot
-        --webroot-path=/var/www/html
-        --quiet
-        --agree-tos
-        --no-eff-email
-        --deploy-hook 'docker kill --signal=HUP talkootunkki_nginx'
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: talkootunkki_certbot
+  #   restart: always
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   command: >
+  #     renew
+  #       --webroot
+  #       --webroot-path=/var/www/html
+  #       --quiet
+  #       --agree-tos
+  #       --no-eff-email
+  #       --deploy-hook 'docker kill --signal=HUP talkootunkki_nginx'
 
 #   adminer:
 #     image: adminer
