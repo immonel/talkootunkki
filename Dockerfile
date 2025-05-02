@@ -5,6 +5,8 @@ COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
 RUN npm ci
 COPY frontend ./
+ARG VITE_TELEGRAM_GROUP_LINK
+ENV VITE_TELEGRAM_GROUP_LINK=$VITE_TELEGRAM_GROUP_LINK
 RUN npm run build
 
 # Copy frontend and build backend

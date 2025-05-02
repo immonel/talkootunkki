@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       VITE_BACKEND_URL: ${BACKEND_URL}
-      VITE_TELEGRAM_GROUP_LINK: ${TELEGRAM_GROUP_LINK}
+      VITE_TELEGRAM_GROUP_LINK: ${VITE_TELEGRAM_GROUP_LINK}
     volumes:
       - ./frontend/src:/app/src
     ports:
