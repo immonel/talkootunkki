@@ -29,7 +29,7 @@ services:
         --agree-tos
         --email ${CERTBOT_EMAIL}
         --no-eff-email
-        -d ${DOMAIN_NAME}
+        -d talkoot.kampusjaosto.fi
 
 volumes:
   certbot-etc:
