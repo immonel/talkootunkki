@@ -71,6 +71,13 @@ services:
         --no-eff-email
         --deploy-hook 'docker kill --signal=HUP talkootunkki_nginx'
 
+#   adminer:
+#     image: adminer
+#     container_name: talkootunkki_adminer
+#     restart: always
+#     networks:
+#       - app-network
+
 volumes:
   postgres_data:
   certbot-etc:
