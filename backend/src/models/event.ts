@@ -2,10 +2,11 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import { sequelize } from '../services/db.service';
 
 interface EventModel extends Model<InferAttributes<EventModel>, InferCreationAttributes<EventModel>> {
-  event_id:   CreationOptional<string>;
-  event_name: string;
-  start_date: number;
-  end_date:   number;
+  event_id:      CreationOptional<string>;
+  event_name:    string;
+  start_date:    number;
+  end_date:      number;
+  telegram_group_link: CreationOptional<string | null>;
 }
 
 const Event = sequelize.define<EventModel>('Event', {
@@ -26,6 +27,10 @@ const Event = sequelize.define<EventModel>('Event', {
   end_date: {
     type: DataTypes.DATE,
     allowNull: false
+  },
+  telegram_group_link: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 })
 

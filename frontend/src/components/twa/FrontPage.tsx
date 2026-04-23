@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
-
-const tgLink = import.meta.env.VITE_TELEGRAM_GROUP_LINK || ''
+import { useEffect, useState } from "react"
+import axios from "axios"
+import type { Event } from "@/src/types"
 
 const Banner = () => (
   <div className="flex items-center gap-5">
@@ -14,6 +15,13 @@ const Banner = () => (
 
 const FrontPage = () => {
   const navigate = useNavigate()
+  const [telegramGroupLink, setTelegramGroupLink] = useState<string | null>(null)
+
+  useEffect(() => {
+    axios.get<Event>('/api/events/current')
+      .then(res => setTelegramGroupLink(res.data?.telegram_group_link || null))
+      .catch(() => {})
+  }, [])
 
   return (
     <main className="flex flex-col items-center gap-16 mt-10">
@@ -26,9 +34,9 @@ const FrontPage = () => {
           🧹 Register
         </button>
         {
-          tgLink && 
+          telegramGroupLink &&
             <a
-              href={tgLink}
+              href={telegramGroupLink}
               className="
                 rounded-xl p-4 w-full text-center
                 bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600

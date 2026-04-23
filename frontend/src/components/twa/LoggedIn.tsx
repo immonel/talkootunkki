@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import LoginInfoCard from "./LoginInfoCard";
 import { useNavigate } from "react-router-dom";
-
-const tgLink = import.meta.env.VITE_TELEGRAM_GROUP_LINK
+import axios from "axios";
+import type { Event } from "@/src/types";
 
 const LoggedIn = () => {
   const participation = JSON.parse(window.localStorage.getItem('participation') || '')
   const { start_date } = participation
   const [ elapsedTime, setElapsedTime ] = useState(Date.now() - start_date)
+  const [ telegramGroupLink, setTelegramGroupLink ] = useState<string | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -17,6 +18,12 @@ const LoggedIn = () => {
 
     return () => clearInterval(interval)
   }, [ start_date ])
+
+  useEffect(() => {
+    axios.get<Event>('/api/events/current')
+      .then(res => setTelegramGroupLink(res.data?.telegram_group_link || null))
+      .catch(() => {})
+  }, [])
 
   return (
     <div className='flex flex-col gap-6 w-full items-center'>
@@ -35,9 +42,9 @@ const LoggedIn = () => {
           🚪 Check out
         </button>
         {
-          tgLink && 
+          telegramGroupLink &&
             <a
-              href={tgLink}
+              href={telegramGroupLink}
               className="
                 rounded-xl p-4 w-11/12 text-center
                 bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600

@@ -3,6 +3,7 @@ export interface Event {
   event_name: string;
   start_date: string;
   end_date: string;
+  telegram_group_link?: string | null;
 }
 
 export interface Participant {

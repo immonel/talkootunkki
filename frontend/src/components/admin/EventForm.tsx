@@ -8,12 +8,12 @@ const EventForm = () => {
   const [startTime, setStartTime] = useState('');
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [telegramGroupLink, setTelegramGroupLink] = useState('');
   const navigate = useNavigate()
 
   const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
     if (!endDate) {
-      // If the end date is empty, automatically set it to the start date
       setEndDate(e.target.value);
     }
   };
@@ -25,12 +25,11 @@ const EventForm = () => {
     const event = {
       'event_name': eventName,
       'start_date': startDateTime,
-      'end_date': endDateTime
+      'end_date': endDateTime,
+      'telegram_group_link': telegramGroupLink || null,
     }
-    console.log('Form submitted:', event)
     await axios.post('/api/events', event)
       .catch((error) => console.log('Error submitting event', error))
-    console.log('Event submitted successfully')
     navigate('/admin')
   }
 
@@ -105,6 +104,19 @@ const EventForm = () => {
               onChange={(e) => setEndTime(e.target.value)}
             />
           </div>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telegram-link">
+            Telegram Group Link
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="telegram-link"
+            type="url"
+            placeholder="https://t.me/..."
+            value={telegramGroupLink}
+            onChange={(e) => setTelegramGroupLink(e.target.value)}
+          />
         </div>
         <div className="flex items-center justify-between">
           <button
