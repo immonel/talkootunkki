@@ -5,11 +5,7 @@ services:
     build: .
     container_name: talkootunkki
     restart: always
-    depends_on:
-      - postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       TG_BOT_API_TOKEN: ${TG_BOT_API_TOKEN}
       WS_EVENT_BROADCAST_INTERVAL: ${WS_EVENT_BROADCAST_INTERVAL}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
@@ -20,21 +16,10 @@ services:
       GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
       VITE_TELEGRAM_GROUP_LINK: ${VITE_TELEGRAM_GROUP_LINK}
       PORT: ${BACKEND_PORT}
-    networks:
-      - app-network
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: talkootunkki_postgres
-    restart: always
-    environment:
-      POSTGRES_DB: talkoot
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    networks:
-      - app-network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data:/data
+    networks:
+      - app-network
 
   nginx:
     image: nginx:mainline-alpine
@@ -71,15 +56,7 @@ services:
   #       --no-eff-email
   #       --deploy-hook 'docker kill --signal=HUP talkootunkki_nginx'
 
-#   adminer:
-#     image: adminer
-#     container_name: talkootunkki_adminer
-#     restart: always
-#     networks:
-#       - app-network
-
 volumes:
-  postgres_data:
   certbot-etc:
   certbot-var:
   web-root:

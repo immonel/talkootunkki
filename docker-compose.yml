@@ -18,8 +18,6 @@ services:
     container_name: talkootunkki_backend-dev
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       TG_BOT_API_TOKEN: ${TG_BOT_API_TOKEN}
       PORT: ${BACKEND_PORT}
       WS_EVENT_BROADCAST_INTERVAL: ${WS_EVENT_BROADCAST_INTERVAL}
@@ -31,22 +29,6 @@ services:
       GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
     volumes:
       - ./backend/src:/app/src
+      - ./data:/data
     ports:
       - 3001:3001
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: talkootunkki_postgres-dev
-    restart: always
-    environment:
-      POSTGRES_DB: talkoot
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
-  adminer:
-    image: adminer
-    container_name: talkootunkki_adminer-dev
-    restart: always
-    ports:
-      - 8080:8080
-
