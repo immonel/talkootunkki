@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
 import { AdminEventData } from "@/src/types";
 import Leaderboard from "@components/common/Leaderboards";
@@ -12,11 +12,10 @@ type EventProps = {
 
 type EventInfoProps = {
   eventData: AdminEventData;
+  setEventData: Dispatch<SetStateAction<AdminEventData | null>>;
 }
 
-const EventInfo = ({ eventData }: EventInfoProps) => {
-  const startDate = new Date(eventData.start_date).toLocaleString('fi')
-  const endDate   = new Date(eventData.end_date).toLocaleString('fi')
+const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
   const participations = eventData.participations
   const totalParticipations = participations.length
   const currentlyParticipating = participations
@@ -33,15 +32,33 @@ const EventInfo = ({ eventData }: EventInfoProps) => {
         .catch(error => console.log('Failed to delete event', error))
     }
   }
+
+  const handleToggleActive = () => {
+    const nextActive = !eventData.is_active
+    axios.patch(`/api/events/${eventData.event_id}/active`, { is_active: nextActive })
+      .then(response => {
+        setEventData(current => current && {
+          ...current,
+          is_active: response.data.is_active
+        })
+      })
+      .catch(error => console.log('Failed to update event status', error))
+  }
   
   return (
     <div className="flex flex-col gap-10 w-10/12 items-center">
       <div className="flex flex-row w-full justify-between items-center">
         <div>
           <h2 className="text-2xl">{eventData.event_name}</h2>
-          <p>{startDate} - {endDate}</p>
+          <p>{eventData.is_active ? 'Active' : 'Inactive'}</p>
         </div>
-        <div>
+        <div className="flex gap-3">
+          <button
+            onClick={handleToggleActive}
+            className="rounded-xl p-3 bg-cs-orange hover:bg-amber-700"
+          >
+            {eventData.is_active ? 'Deactivate event' : 'Activate event'}
+          </button>
           <button
             onClick={handleDelete}
             className="rounded-xl p-3 bg-red-700 hover:bg-red-800"
@@ -91,7 +108,7 @@ const AdminEventInfo = ({ event_id }: EventProps) => {
   return (
     <div className="flex flex-col w-full items-center">
       {eventData
-        ? <EventInfo eventData={eventData} />
+        ? <EventInfo eventData={eventData} setEventData={setEventData} />
         : <p>{errorMessage}</p>
       }
     </div>

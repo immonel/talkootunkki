@@ -30,7 +30,7 @@ const LoggedIn = () => {
       <LoginInfoCard { ...participation } elapsedTime={elapsedTime} />
       <p>Happy cleaning! 🧹🦊</p>
       <small className="w-2/3 text-center">
-        Remember to check out at the starting point before the event ends.
+        Remember to check out at the starting point.
         <b>You will need to scan the QR code again</b> to finish your participation and to
         qualify for the competition!
       </small>

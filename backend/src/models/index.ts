@@ -29,7 +29,7 @@ Participation.belongsTo(Event, {
 })
 
 Event.sync({
-  // alter: true
+  alter: true
 })
 Participant.sync({
   // alter: true

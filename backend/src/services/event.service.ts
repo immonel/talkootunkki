@@ -1,9 +1,18 @@
 import { Event, Participant, Participation } from "../models"
-import { Op } from "sequelize"
 import _ from 'lodash';
 import { LeaderboardAssociation } from "../types";
+import { sequelize } from "./db.service";
 
-export const getAllEvents = async () => await Event.findAll()
+type EventInput = {
+  event_name: string;
+  telegram_group_link?: string | null;
+}
+
+export const getAllEvents = async () => await Event.findAll({
+  order: [
+    ['createdAt', 'DESC']
+  ]
+})
 
 const getEventById = async (id: string) => (
   await Event.findOne({
@@ -21,20 +30,49 @@ export const deleteEventById = async (id: string) => (
   })
 )
 
-export const getCurrentEvent = async () => {
-  const currentDate = Date.now()
-  const currentEvent = await Event.findOne({
-    where: {
-      [Op.and]: [{
-        start_date: {
-          [Op.lte]: currentDate
-        }
-      }, {
-        end_date: {
-          [Op.gt]: currentDate
-        }
-      }]
+export const createEvent = async (event: EventInput) => sequelize.transaction(async (transaction) => {
+  await Event.update(
+    { is_active: false },
+    {
+      where: { is_active: true },
+      transaction
     }
+  )
+  return Event.create(
+    {
+      ...event,
+      is_active: true
+    },
+    { transaction }
+  )
+})
+
+export const setEventActive = async (id: string, is_active: boolean) => sequelize.transaction(async (transaction) => {
+  const event = await Event.findOne({
+    where: { event_id: id },
+    transaction
+  })
+  if (!event) {
+    return null
+  }
+
+  if (is_active) {
+    await Event.update(
+      { is_active: false },
+      {
+        where: { is_active: true },
+        transaction
+      }
+    )
+  }
+
+  event.is_active = is_active
+  return event.save({ transaction })
+})
+
+export const getCurrentEvent = async () => {
+  const currentEvent = await Event.findOne({
+    where: { is_active: true }
   })
   return currentEvent
 }
@@ -61,7 +99,7 @@ export const getCurrentEventAssociations = async () => {
 export const getLatestEvent = async () => {
   const latestEvent = await Event.findOne({
     order: [
-      ['start_date', 'DESC']
+      ['createdAt', 'DESC']
     ]
   })
   return latestEvent

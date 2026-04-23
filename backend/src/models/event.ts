@@ -4,8 +4,7 @@ import { sequelize } from '../services/db.service';
 interface EventModel extends Model<InferAttributes<EventModel>, InferCreationAttributes<EventModel>> {
   event_id:      CreationOptional<string>;
   event_name:    string;
-  start_date:    number;
-  end_date:      number;
+  is_active:     CreationOptional<boolean>;
   telegram_group_link: CreationOptional<string | null>;
 }
 
@@ -20,18 +19,24 @@ const Event = sequelize.define<EventModel>('Event', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  start_date: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  end_date: {
-    type: DataTypes.DATE,
-    allowNull: false
+  is_active: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   },
   telegram_group_link: {
     type: DataTypes.STRING,
     allowNull: true
   }
+}, {
+  indexes: [{
+    name: 'events_one_active_event',
+    unique: true,
+    fields: ['is_active'],
+    where: {
+      is_active: true
+    }
+  }]
 })
 
 export default Event;

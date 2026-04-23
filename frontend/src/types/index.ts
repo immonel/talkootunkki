@@ -1,8 +1,7 @@
 export interface Event {
   event_id: string;
   event_name: string;
-  start_date: string;
-  end_date: string;
+  is_active: boolean;
   telegram_group_link?: string | null;
 }
 

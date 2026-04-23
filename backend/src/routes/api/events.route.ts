@@ -1,11 +1,12 @@
 import express from 'express'
-import { Event } from '../../models';
 import {
+  createEvent,
   deleteEventById,
   getAllEvents,
   getCurrentEvent,
   getEventDetails,
   getLatestEvent,
+  setEventActive,
 } from '../../services/event.service';
 
 const eventsRouter = express.Router();
@@ -28,6 +29,19 @@ eventsRouter.get('/current', async (request, response, next) => {
     }
     const eventDetails = await getEventDetails(currentEvent.event_id)
     response.status(200).json(eventDetails)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+eventsRouter.get('/latest', async (request, response, next) => {
+  try {
+    const latestEvent = await getLatestEvent()
+    if (!latestEvent) {
+      response.status(204).end()
+      return
+    }
+    response.status(200).json(latestEvent)
   } catch (exception) {
     next(exception)
   }
@@ -63,25 +77,24 @@ eventsRouter.delete('/:id', async (request, response, next) => {
 eventsRouter.post('/', async (request, response, next) => {
   try {
     const event = request.body
-    await Event.create(event)
+    await createEvent(event)
     response.status(200).send('ok')
   } catch (exception) {
     next(exception)
   }
 })
 
-eventsRouter.get('/latest', async (request, response, next) => {
+eventsRouter.patch('/:id/active', async (request, response, next) => {
   try {
-    const latestEvent = await getLatestEvent()
-    if (!latestEvent) {
-      response.status(204).end()
+    const event = await setEventActive(request.params.id, request.body.is_active === true)
+    if (!event) {
+      response.status(404).end()
       return
     }
-    response.status(200).json(latestEvent)
+    response.status(200).json(event)
   } catch (exception) {
     next(exception)
   }
 })
 
 export default eventsRouter
-

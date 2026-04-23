@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 import { getCode } from './code.service';
 import { CorsOptions } from 'cors';
-import { getCurrentEvent, getEventDetails } from './event.service';
+import { getCurrentEvent, getEventDetails, getLatestEvent } from './event.service';
 import { parse } from 'cookie'
 import jwt from 'jsonwebtoken'
 
@@ -60,12 +60,16 @@ export const broadcastCode = () =>
 
 export const broadcastCurrentEvent = async () => {
   const currentEvent = await getCurrentEvent()
-  if (!currentEvent) {
-    return
-  }
-  const eventDetails = await getEventDetails(currentEvent.event_id)
-  io.to('admin').emit('CURRENT_EVENT', eventDetails)
-  io.to('other').emit('CURRENT_EVENT', eventDetails?.leaderboards)
+  const latestEvent = await getLatestEvent()
+  const currentEventDetails = currentEvent
+    ? await getEventDetails(currentEvent.event_id)
+    : null
+  const latestEventDetails = latestEvent
+    ? await getEventDetails(latestEvent.event_id)
+    : null
+
+  io.to('admin').emit('CURRENT_EVENT', currentEventDetails)
+  io.to('other').emit('CURRENT_EVENT', latestEventDetails?.leaderboards)
 }
 
 setInterval(broadcastCurrentEvent, broadcastInterval)
