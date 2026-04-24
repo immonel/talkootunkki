@@ -15,6 +15,7 @@ const headerValues = [
   'association',
   'start_date',
   'end_date',
+  'participation_duration',
   'participation_id'
 ]
 
@@ -166,8 +167,10 @@ export const uploadParticipationToSheets = async (participation: GoogleSheetsRow
     // Google sheets does not understand ISO 8601 timestamps
     const start_date = parseTimestamp(participation.start_date)
     const end_date   = parseTimestamp(participation.end_date)
+    const participation_duration = formatDuration(participation.start_date, participation.end_date)
     const rowValues  = {
       ...participation,
+      participation_duration,
       ...(start_date) && { start_date },
       ...(end_date)   && { end_date }
     }
@@ -196,4 +199,16 @@ const parseTimestamp = (timestamp: number | undefined) => {
   } else {
     return undefined
   }
+}
+
+const formatDuration = (startTimestamp: number | undefined, endTimestamp: number | undefined) => {
+  if (!startTimestamp || !endTimestamp || endTimestamp < startTimestamp) {
+    return ''
+  }
+
+  const durationMinutes = Math.floor((endTimestamp - startTimestamp) / (1000 * 60))
+  const hours = Math.floor(durationMinutes / 60)
+  const minutes = durationMinutes % 60
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
 }
