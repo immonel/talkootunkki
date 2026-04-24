@@ -44,6 +44,12 @@ const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
       })
       .catch(error => console.log('Failed to update event status', error))
   }
+
+  const refreshEventData = () => {
+    axios.get(`/api/events/${eventData.event_id}`)
+      .then(response => setEventData(response.data))
+      .catch(error => console.log('Failed to refresh event data', eventData.event_id, error))
+  }
   
   return (
     <div className="flex flex-col gap-10 w-10/12 items-center">
@@ -73,7 +79,10 @@ const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
       </div>
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <Leaderboard data={eventData.leaderboards} />
-        <ParticipationList participations={eventData.participations} />
+        <ParticipationList
+          participations={eventData.participations}
+          onParticipationChanged={refreshEventData}
+        />
       </div>
     </div>
   )

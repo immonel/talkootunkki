@@ -17,7 +17,7 @@ export interface Participation {
   participation_id: string;
   user_id: string;
   start_date: string;
-  end_date: string;
+  end_date: string | null;
   association: string | null;
 }
 
