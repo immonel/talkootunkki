@@ -1,4 +1,5 @@
 import Event from './event'
+import GoogleCredentials from './googleCredentials'
 import Participant from './participant'
 import Participation from './participation'
 
@@ -37,9 +38,13 @@ Participant.sync({
 Participation.sync({
   // alter: true
 })
+GoogleCredentials.sync({
+  alter: true
+})
 
 export {
   Event,
+  GoogleCredentials,
   Participant,
   Participation
 }

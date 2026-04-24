@@ -6,6 +6,7 @@ interface EventModel extends Model<InferAttributes<EventModel>, InferCreationAtt
   event_name:    string;
   is_active:     CreationOptional<boolean>;
   telegram_group_link: CreationOptional<string | null>;
+  google_sheet_id: CreationOptional<string | null>;
 }
 
 const Event = sequelize.define<EventModel>('Event', {
@@ -25,6 +26,10 @@ const Event = sequelize.define<EventModel>('Event', {
     defaultValue: false
   },
   telegram_group_link: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  google_sheet_id: {
     type: DataTypes.STRING,
     allowNull: true
   }

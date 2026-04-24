@@ -8,6 +8,7 @@ import {
   getLatestEvent,
   setEventActive,
 } from '../../services/event.service';
+import { GoogleSheetsAccessError } from '../../services/google.service';
 
 const eventsRouter = express.Router();
 
@@ -80,6 +81,23 @@ eventsRouter.post('/', async (request, response, next) => {
     await createEvent(event)
     response.status(200).send('ok')
   } catch (exception) {
+    if (exception instanceof GoogleSheetsAccessError) {
+      response.status(400).json({
+        code: 'GOOGLE_SHEETS_ACCESS_FAILED',
+        message: exception.message
+      })
+      return
+    }
+    if (
+      exception instanceof Error &&
+      ['Google Sheets link is required', 'Invalid Google Sheets link'].includes(exception.message)
+    ) {
+      response.status(400).json({
+        code: 'GOOGLE_SHEETS_LINK_INVALID',
+        message: exception.message
+      })
+      return
+    }
     next(exception)
   }
 })

@@ -2,10 +2,18 @@ import { Event, Participant, Participation } from "../models"
 import _ from 'lodash';
 import { LeaderboardAssociation } from "../types";
 import { sequelize } from "./db.service";
+import {
+  parseGoogleSheetId,
+  saveGoogleCredentials,
+  validateGoogleSheetsAccess,
+} from "./google.service";
 
 type EventInput = {
   event_name: string;
   telegram_group_link?: string | null;
+  google_sheet_link?: string | null;
+  google_service_account_email?: string | null;
+  google_private_key?: string | null;
 }
 
 export const getAllEvents = async () => await Event.findAll({
@@ -30,22 +38,56 @@ export const deleteEventById = async (id: string) => (
   })
 )
 
-export const createEvent = async (event: EventInput) => sequelize.transaction(async (transaction) => {
-  await Event.update(
-    { is_active: false },
-    {
-      where: { is_active: true },
-      transaction
+const prepareEventInput = async (event: EventInput) => {
+  const google_sheet_id = parseGoogleSheetId(event.google_sheet_link)
+  if (!event.google_sheet_link) {
+    throw Error('Google Sheets link is required')
+  }
+  if (event.google_sheet_link && !google_sheet_id) {
+    throw Error('Invalid Google Sheets link')
+  }
+
+  if (google_sheet_id) {
+    const credentials = event.google_service_account_email && event.google_private_key
+      ? {
+        service_account_email: event.google_service_account_email,
+        private_key: event.google_private_key
+      }
+      : null
+
+    await validateGoogleSheetsAccess(google_sheet_id, credentials)
+
+    if (credentials) {
+      await saveGoogleCredentials(credentials)
     }
-  )
-  return Event.create(
-    {
-      ...event,
-      is_active: true
-    },
-    { transaction }
-  )
-})
+  }
+
+  return {
+    event_name: event.event_name,
+    telegram_group_link: event.telegram_group_link || null,
+    google_sheet_id
+  }
+}
+
+export const createEvent = async (event: EventInput) => {
+  const eventInput = await prepareEventInput(event)
+  return sequelize.transaction(async (transaction) => {
+    await Event.update(
+      { is_active: false },
+      {
+        where: { is_active: true },
+        transaction
+      }
+    )
+    return Event.create(
+      {
+        ...eventInput,
+        is_active: true
+      },
+      { transaction }
+    )
+  })
+}
 
 export const setEventActive = async (id: string, is_active: boolean) => sequelize.transaction(async (transaction) => {
   const event = await Event.findOne({

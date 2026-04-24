@@ -7,7 +7,7 @@ import { parse } from 'cookie'
 import jwt from 'jsonwebtoken'
 
 const broadcastInterval = Number(process.env.WS_EVENT_BROADCAST_INTERVAL) || 5000
-const secret = process.env.JWT_SECRET_KEY || ''
+const secret = process.env.APP_SECRET_KEY || ''
 
 let io: Server;
 let cors: CorsOptions

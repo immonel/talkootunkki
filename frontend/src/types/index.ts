@@ -3,6 +3,7 @@ export interface Event {
   event_name: string;
   is_active: boolean;
   telegram_group_link?: string | null;
+  google_sheet_id?: string | null;
 }
 
 export interface Participant {

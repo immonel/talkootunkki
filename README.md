@@ -18,9 +18,9 @@ Before you begin, ensure you have the following installed:
 2.  Edit the `.env` file and fill in the required values. The necessary variables are described in `.env.sample`. Key variables include:
     *   `POSTGRES_USER`, `POSTGRES_PASSWORD`: Credentials for the PostgreSQL database.
     *   `TG_BOT_API_TOKEN`: Your Telegram Bot API token.
-    *   `JWT_SECRET_KEY`: A secret key for signing JSON Web Tokens.
+    *   `APP_SECRET_KEY`: A secret key for signing JSON Web Tokens and encrypting stored credentials.
     *   `ADMIN_USERNAME`, `ADMIN_PASSWORD`: Credentials for an administrative user.
-    *   `GOOGLE_SHEETS_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`: Credentials for accessing Google Sheets API.
+    *   Google Sheets are linked per event in the admin UI. Service account credentials are validated there and stored encrypted in the database.
     *   `BACKEND_URL` (for dev): The URL where the frontend can reach the backend (e.g., `http://localhost:3001`).
     *   `TELEGRAM_GROUP_LINK`: Link to the associated Telegram group.
     *   `DOMAIN_NAME` (for prod setup): The domain name for which to obtain SSL certificates.
