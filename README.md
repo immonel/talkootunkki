@@ -23,8 +23,9 @@ Before you begin, ensure you have the following installed:
     *   Google Sheets are linked per event in the admin UI. Service account credentials are validated there and stored encrypted in the database.
     *   `BACKEND_URL` (for dev): The URL where the frontend can reach the backend (e.g., `http://localhost:3001`).
     *   `TELEGRAM_GROUP_LINK`: Link to the associated Telegram group.
-    *   `DOMAIN_NAME` (for prod setup): The domain name for which to obtain SSL certificates.
-    *   `CERTBOT_EMAIL` (for prod setup): Email address for Let's Encrypt notifications.
+    *   `DOMAIN_NAME` (for prod): The public host name for nginx-proxy and Let's Encrypt.
+    *   `ACME_EMAIL` (for prod): Email address for Let's Encrypt notifications.
+    *   `CF_Token`, `CF_Account_ID`, `CF_Zone_ID` (for prod): Cloudflare DNS API values for DNS-01 certificates. `CF_Zone_ID` is optional when `CF_Account_ID` is set.
 
 ## Development Setup
 
@@ -46,32 +47,24 @@ Before you begin, ensure you have the following installed:
 
 ## Production Setup
 
-Deploying to production requires HTTPS, handled via Nginx and Let's Encrypt certificates.
+Deploying to production requires HTTPS, handled via nginx-proxy and acme-companion.
 
-1.  **Ensure `.env` is complete:** Make sure all necessary variables, including `DOMAIN_NAME` and `CERTBOT_EMAIL`, are set in your `.env` file.
-2.  **Configure DNS:** Ensure the `DOMAIN_NAME` specified in `.env` points to the server where you are deploying the application.
-3.  **Initial Certificate Setup:**
-    *   Run the certificate setup container. This uses `certbot` to obtain the *initial* certificates for your domain.
-      ```bash
-      docker-compose -f docker-compose.setup.yml up --build
-      ```
-    *   Follow the prompts from `certbot`. Once successful, shut down the containers (usually `CTRL+C`).
-4.  **Generate Diffie-Hellman Parameters:**
-    This enhances security for TLS.
-    ```bash
-    cd nginx
-    sudo ./dhparam.sh # This might take a while
-    cd ..
-    ```
-    *Note: Ensure `dhparam.sh` has execute permissions (`chmod +x nginx/dhparam.sh`). You only need to do this once.*
-5.  **Build and Run Production Containers:**
+1.  **Ensure `.env` is complete:** Make sure all necessary variables, including `DOMAIN_NAME` and `ACME_EMAIL`, are set in your `.env` file.
+2.  **Configure Cloudflare DNS:** Ensure the `DOMAIN_NAME` specified in `.env` exists in Cloudflare. Create a Cloudflare API token with `Zone > DNS > Edit` and `Zone > Zone > Read`, then set `CF_Token` and `CF_Account_ID` in `.env`. `CF_Zone_ID` can be set for a single zone or left empty.
+3.  **Check Nginx vhost include:** The custom nginx-proxy include is `nginx/vhost.d/talkoot.kampusjaosto.fi`. If `DOMAIN_NAME` changes, rename this file to match the new host.
+4.  **Build and Run Production Containers:**
     ```bash
     docker-compose -f docker-compose.prod.yml up --build -d
     ```
-    This starts the application backend, database, Nginx reverse proxy, and the Certbot renewal service.
+    This starts the application backend, nginx-proxy, and acme-companion. Certificates are created through Cloudflare DNS-01 using the `ACMESH_DNS_API_CONFIG` in `docker-compose.prod.yml`.
+
+5.  **Check certificate/proxy logs:**
+    ```bash
+    docker-compose -f docker-compose.prod.yml logs -f nginx-proxy acme-companion
+    ```
 
 6.  **Automatic Certificate Renewal:**
-    The `certbot` service included in `docker-compose.prod.yml` automatically checks for certificate renewals twice a day. If a certificate is due for renewal, it obtains a new one and automatically reloads Nginx to apply it. No manual intervention is needed for renewals.
+    The `acme-companion` service automatically checks for certificate renewals and reloads nginx-proxy after certificate changes.
 
 7.  **Stopping Production Containers:**
     ```bash
@@ -83,9 +76,9 @@ Deploying to production requires HTTPS, handled via Nginx and Let's Encrypt cert
 *   **Frontend:** Vite-based framework (React/Vue/Svelte - check `./frontend/package.json`)
 *   **Backend:** Node.js (check `./backend/package.json`)
 *   **Database:** PostgreSQL
-*   **Web Server/Proxy:** Nginx
+*   **Web Server/Proxy:** nginx-proxy
 *   **Containerization:** Docker, Docker Compose
-*   **SSL Certificates:** Let's Encrypt via Certbot (with automated renewal)
+*   **SSL Certificates:** Let's Encrypt via acme-companion and Cloudflare DNS-01
 
 ---
 

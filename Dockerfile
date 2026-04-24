@@ -19,5 +19,5 @@ RUN npm ci
 COPY backend ./
 RUN npm run build
 
-EXPOSE 80
+EXPOSE 3001
 CMD ["npm", "run", "prod"]
