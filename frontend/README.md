@@ -1,27 +1,95 @@
-# React + TypeScript + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite app for talkootunkki.
 
-Currently, two official plugins are available:
+## What It Does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- public front page
+- Telegram Web App participant flow under `/twa`
+- admin login and admin event tools under `/admin`
+- live updates through Socket.IO
+- HTTP requests through Axios
 
-## Expanding the ESLint configuration
+Main routes live in `src/router/index.tsx`.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Requirements
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js 18+
+- npm
+- backend running on configured URL
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+## Setup
+
+Install dependencies:
+
+```bash
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Start dev server:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+## Environment
+
+Frontend reads:
+
+- `VITE_BACKEND_URL`: backend URL, for example `http://localhost:3001`
+
+Docker dev passes this from root `.env` value `BACKEND_URL`.
+
+For direct frontend development, create `frontend/.env.local`:
+
+```bash
+printf "VITE_BACKEND_URL=http://localhost:3001\n" > .env.local
+```
+
+## Scripts
+
+```bash
+npm run dev
+```
+
+Runs Vite dev server on port `3000`.
+
+```bash
+npm run build
+```
+
+Type-checks and builds production files into `dist/`.
+
+```bash
+npm run lint
+```
+
+Runs ESLint.
+
+```bash
+npm run preview
+```
+
+Serves built frontend locally after `npm run build`.
+
+## File Map
+
+- `src/main.tsx`: app entrypoint
+- `src/App.tsx`: Axios defaults and router
+- `src/router/`: route definitions and layouts
+- `src/pages/`: page-level components
+- `src/components/`: shared UI pieces
+- `src/utils/socket.ts`: Socket.IO client setup
+- `vite.config.ts`: Vite config and aliases
+
+## Notes For New Devs
+
+Use root Docker setup if you want easiest full-stack start. Use direct `npm run dev` when working only on frontend.
+
+Vite environment variable names must start with `VITE_`, otherwise browser code cannot read them.

@@ -1,85 +1,200 @@
 # talkootunkki
 
-A web application designed for organizing volunteer work events ("talkoot"), integrated with a Telegram bot and Google Sheets.
+Web app for organizing volunteer work events ("talkoot"). It has:
+
+- public/TWA views for participants
+- admin views for creating events and following participation
+- Telegram Web App login validation
+- Google Sheets export per event
+- SQLite database stored under `./data`
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+Install:
 
-*   [Docker](https://docs.docker.com/get-docker/)
-*   [Docker Compose](https://docs.docker.com/compose/install/)
+- Docker
+- Docker Compose
 
-## Environment Setup
+For local non-Docker development, also install Node.js 18+ and npm.
 
-1.  Copy the sample environment file:
-    ```bash
-    cp .env.sample .env
-    ```
-2.  Edit the `.env` file and fill in the required values. The necessary variables are described in `.env.sample`. Key variables include:
-    *   `POSTGRES_USER`, `POSTGRES_PASSWORD`: Credentials for the PostgreSQL database.
-    *   `TG_BOT_API_TOKEN`: Your Telegram Bot API token.
-    *   `APP_SECRET_KEY`: A secret key for signing JSON Web Tokens and encrypting stored credentials.
-    *   `ADMIN_USERNAME`, `ADMIN_PASSWORD`: Credentials for an administrative user.
-    *   Google Sheets are linked per event in the admin UI. Service account credentials are validated there and stored encrypted in the database.
-    *   `BACKEND_URL` (for dev): The URL where the frontend can reach the backend (e.g., `http://localhost:3001`).
-    *   `TELEGRAM_GROUP_LINK`: Link to the associated Telegram group.
-    *   `DOMAIN_NAME` (for prod): The public host name for nginx-proxy and Let's Encrypt.
-    *   `ACME_EMAIL` (for prod): Email address for Let's Encrypt notifications.
-    *   `CF_Token`, `CF_Account_ID`, `CF_Zone_ID` (for prod): Cloudflare DNS API values for DNS-01 certificates. `CF_Zone_ID` is optional when `CF_Account_ID` is set.
+This README uses `docker-compose`. If your Docker install uses Compose v2 only, replace commands like `docker-compose up` with `docker compose up`.
 
-## Development Setup
+## Environment
 
-1.  **Build and Run Containers:**
-    ```bash
-    docker-compose up --build
-    ```
-    This command builds the images if they don't exist and starts the development containers (frontend, backend, postgres, adminer). The `-d` flag can be added to run them in the background.
+Create local env file:
 
-2.  **Access Services:**
-    *   Frontend: [http://localhost:3000](http://localhost:3000)
-    *   Backend: [http://localhost:3001](http://localhost:3001)
-    *   Adminer (Database GUI): [http://localhost:8080](http://localhost:8080) (Server: `postgres`, Username/Password: from `.env`)
+```bash
+cp .env.sample .env
+```
 
-3.  **Stopping Containers:**
-    ```bash
-    docker-compose down
-    ```
+Edit `.env`:
 
-## Production Setup
+- `BACKEND_PORT`: backend port inside/outside Docker, usually `3001`
+- `WS_EVENT_BROADCAST_INTERVAL`: websocket refresh interval in milliseconds
+- `TG_BOT_API_TOKEN`: Telegram bot token used to validate Telegram Web App users
+- `APP_SECRET_KEY`: secret for admin JWTs and encrypted Google credentials
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD`: admin login credentials
+- `BACKEND_URL`: dev URL used by frontend, usually `http://localhost:3001`
+- `DOMAIN_NAME`: production host name used by nginx-proxy and Let's Encrypt
+- `ACME_EMAIL`: Let's Encrypt notification email
+- `CF_Token`, `CF_Account_ID`, `CF_Zone_ID`: Cloudflare DNS API values for DNS-01 certificates
 
-Deploying to production requires HTTPS, handled via nginx-proxy and acme-companion.
+Each event has its own Google Sheet link. Google service account credentials are entered in the event creation UI only when current stored credentials cannot access that sheet. The credentials are stored once globally as encrypted SQLite data and reused for later events.
 
-1.  **Ensure `.env` is complete:** Make sure all necessary variables, including `DOMAIN_NAME` and `ACME_EMAIL`, are set in your `.env` file.
-2.  **Configure Cloudflare DNS:** Ensure the `DOMAIN_NAME` specified in `.env` exists in Cloudflare. Create a Cloudflare API token with `Zone > DNS > Edit` and `Zone > Zone > Read`, then set `CF_Token` and `CF_Account_ID` in `.env`. `CF_Zone_ID` can be set for a single zone or left empty.
-3.  **Check Nginx vhost include:** The custom nginx-proxy include is `nginx/vhost.d/talkoot.kampusjaosto.fi`. If `DOMAIN_NAME` changes, rename this file to match the new host.
-4.  **Build and Run Production Containers:**
-    ```bash
-    docker-compose -f docker-compose.prod.yml up --build -d
-    ```
-    This starts the application backend, nginx-proxy, and acme-companion. Certificates are created through Cloudflare DNS-01 using the `ACMESH_DNS_API_CONFIG` in `docker-compose.prod.yml`.
+### `APP_SECRET_KEY`
 
-5.  **Check certificate/proxy logs:**
-    ```bash
-    docker-compose -f docker-compose.prod.yml logs -f nginx-proxy acme-companion
-    ```
+`APP_SECRET_KEY` protects two things:
 
-6.  **Automatic Certificate Renewal:**
-    The `acme-companion` service automatically checks for certificate renewals and reloads nginx-proxy after certificate changes.
+- admin login cookies/JWTs
+- encrypted Google service account credentials stored in SQLite
 
-7.  **Stopping Production Containers:**
-    ```bash
-    docker-compose -f docker-compose.prod.yml down
-    ```
+Use long random value. Do not use password or public string. Example:
 
-## Technology Stack
+```bash
+openssl rand -base64 32
+```
 
-*   **Frontend:** Vite-based framework (React/Vue/Svelte - check `./frontend/package.json`)
-*   **Backend:** Node.js (check `./backend/package.json`)
-*   **Database:** PostgreSQL
-*   **Web Server/Proxy:** nginx-proxy
-*   **Containerization:** Docker, Docker Compose
-*   **SSL Certificates:** Let's Encrypt via acme-companion and Cloudflare DNS-01
+Keep same value across restarts. If this value changes, old admin sessions stop working and stored Google credentials cannot be decrypted. In that case, enter Google service account credentials again through event creation UI.
 
----
+## Development With Docker
 
-*This README provides a general setup guide. Specific implementation details might require inspecting the source code in the `frontend` and `backend` directories.*
+Docker dev is easiest path. It starts:
+
+- frontend on port `3000`
+- backend on port `3001`
+- SQLite database file mounted from `./data/talkoot.db`
+
+Start containers:
+
+```bash
+docker-compose up --build
+```
+
+Open:
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001/api
+
+If frontend cannot reach backend, check `BACKEND_URL` in `.env`. For local browser development it should usually be:
+
+```text
+BACKEND_URL=http://localhost:3001
+```
+
+Stop:
+
+```bash
+docker-compose down
+```
+
+Data persists in `./data/talkoot.db`.
+
+## Development Without Docker
+
+Use this when you want faster frontend/backend iteration without rebuilding containers.
+
+Backend:
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm install
+printf "VITE_BACKEND_URL=http://localhost:3001\n" > .env.local
+npm run dev
+```
+
+Root `.env` is for Docker Compose. Direct `npm run dev` commands read env files from their own folders.
+
+Backend direct development stores SQLite at `/data/talkoot.db`. If backend fails with SQLite open errors, create writable `/data` or use Docker dev instead.
+
+## Production
+
+Production uses:
+
+- root `Dockerfile`
+- `docker-compose.prod.yml`
+- `nginxproxy/nginx-proxy`
+- `nginxproxy/acme-companion`
+- Let's Encrypt certificates through Cloudflare DNS-01 challenge
+
+Production image builds frontend first, then backend, then backend serves built frontend files.
+
+Before deploy:
+
+1. Point DNS for `DOMAIN_NAME` to server.
+2. Make sure `DOMAIN_NAME` exists in Cloudflare.
+3. Create Cloudflare API token with these permissions:
+   - `Zone > DNS > Edit`
+   - `Zone > Zone > Read`
+4. Fill `.env`:
+   - `DOMAIN_NAME`: public host, for example `talkoot.kampusjaosto.fi`
+   - `ACME_EMAIL`: email for Let's Encrypt notifications
+   - `CF_Token`: Cloudflare API token
+   - `CF_Account_ID`: Cloudflare account ID
+   - `CF_Zone_ID`: optional when `CF_Account_ID` is set, useful for one-zone config
+5. Confirm `nginx/vhost.d/talkoot.kampusjaosto.fi` matches `DOMAIN_NAME`. Rename this file if host changes.
+6. Start stack:
+
+```bash
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+This starts app container, nginx-proxy, and acme-companion. Certificate creation uses `ACMESH_DNS_API_CONFIG` in `docker-compose.prod.yml`.
+
+Check proxy and certificate logs:
+
+```bash
+docker-compose -f docker-compose.prod.yml logs -f nginx-proxy acme-companion
+```
+
+Stop production stack:
+
+```bash
+docker-compose -f docker-compose.prod.yml down
+```
+
+Certificates renew automatically. `acme-companion` checks renewals and reloads nginx-proxy after certificate changes.
+
+## Project Layout
+
+- `frontend/`: React + TypeScript + Vite frontend
+- `backend/`: Express + TypeScript backend
+- `data/`: SQLite database mount
+- `nginx/vhost.d/`: nginx-proxy vhost includes
+- `docker-compose.yml`: dev stack
+- `docker-compose.prod.yml`: production stack
+
+## Useful Commands
+
+Frontend:
+
+```bash
+cd frontend
+npm run dev
+npm run build
+npm run lint
+```
+
+Backend:
+
+```bash
+cd backend
+npm run dev
+npm run build
+npm run prod
+```
+
+There is no real test suite yet. Backend `npm test` is placeholder and exits with error.
+
+## More Docs
+
+- Frontend details: `frontend/README.md`
+- Backend details: `backend/README.md`
