@@ -2,6 +2,7 @@ import express from 'express'
 import type { RequestHandler, Router } from 'express';
 
 import eventsRouter from './events.route'
+import publicEventsRouter from './public-events.route'
 import registrationRouter from './register.route';
 import participationsRouter from './participations.route';
 import authRouter from './auth.route';
@@ -26,6 +27,10 @@ const defaultRoutes: Route[] = [
   {
     path: '/auth',
     router: authRouter
+  },
+  {
+    path: '/events',
+    router: publicEventsRouter
   }
 ]
 

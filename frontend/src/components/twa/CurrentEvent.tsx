@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import axios from "axios"
 import type { LeaderboardAssociation } from "@/src/types"
 import Leaderboard from "../common/Leaderboards"
 import { socket } from "@/src/utils/socket"
@@ -8,18 +9,30 @@ const CurrentEvent = () => {
   const [ errorMessage, setErrorMessage ] = useState('Loading event data...')
 
   useEffect(() => {
-    socket.on('CURRENT_EVENT', (data) => {
+    let isMounted = true
+
+    const setLeaderboardData = (data: LeaderboardAssociation[] | null | undefined) => {
+      if (!isMounted) {
+        return
+      }
       if (!data) {
         setErrorMessage('Failed to load event data')
         return
       }
       setLeaderboards(data)
       setErrorMessage('')
-    })
+    }
+
+    axios.get<LeaderboardAssociation[]>('/api/events/latest/leaderboards')
+      .then((response) => setLeaderboardData(response.data))
+      .catch(() => setLeaderboardData(null))
+
+    socket.on('CURRENT_EVENT', setLeaderboardData)
     socket.emit('CURRENT_EVENT')
 
     return () => {
-      socket.off('CURRENT_EVENT')
+      isMounted = false
+      socket.off('CURRENT_EVENT', setLeaderboardData)
     }
   }, [])
 
