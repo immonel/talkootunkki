@@ -46,7 +46,7 @@ const RegisterPage = () => {
   }
 
   const handleSuccessfulRegistration = async () => {
-    navigate('/twa')
+    navigate('/')
   }
   
   const stages = {
@@ -67,7 +67,7 @@ const RegisterPage = () => {
 
   useEffect(() => {
     WebApp.BackButton.show()
-    WebApp.BackButton.onClick(() => navigate("/twa"))
+    WebApp.BackButton.onClick(() => navigate("/"))
   }, [ navigate ])
     
   return (

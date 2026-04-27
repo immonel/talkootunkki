@@ -4,7 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 const TWALayout = () => {
   const location = useLocation()
-  const backButtonVisible = location.pathname !== '/twa'
+  const backButtonVisible = location.pathname !== '/'
   const { colorScheme } = WebApp
 
   return (

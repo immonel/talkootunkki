@@ -40,7 +40,7 @@ const LoggedIn = ({ participation }: Props) => {
       </small>
       <div className="flex flex-col w-80 gap-3 items-center">
         <button
-          onClick={() => navigate('/twa/finish')}
+          onClick={() => navigate('/finish')}
           className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-11/12 text-center"
         >
           🚪 Check out
@@ -58,7 +58,7 @@ const LoggedIn = ({ participation }: Props) => {
             </a>
         }
         <button
-          onClick={() => navigate('/twa/leaderboards')}
+          onClick={() => navigate('/leaderboards')}
           className="
             rounded-xl p-4 w-11/12 text-center
             bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800
@@ -66,7 +66,7 @@ const LoggedIn = ({ participation }: Props) => {
           🏆 Leaderboards
         </button>
         <button
-          onClick={() => navigate('/twa/prizes')}
+          onClick={() => navigate('/prizes')}
           className="rounded-xl p-4 w-11/12 text-center
           bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800"
         >

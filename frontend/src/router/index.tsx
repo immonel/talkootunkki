@@ -1,9 +1,8 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import AdminLayout from './layouts/admin'
 import TWALayout from './layouts/twa'
 
-import Frontpage from '../pages/frontpage'
 import TelegramWebApp from '../pages/twa'
 import CodePage from '../pages/code'
 import AdminPage from '../pages/admin'
@@ -21,7 +20,6 @@ import PrizesPage from '../pages/twa/prizes'
 const Router = () => (
   <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Frontpage />} />
       <Route path='/code' element={
         <RequireAuth>
           <CodePage />
@@ -30,12 +28,17 @@ const Router = () => (
       <Route path='/login' element={<LoginPage />} />
       <Route path='/logout' element={<LogoutPage />} />
       <Route element={<TWALayout />}>
-        <Route path='/twa' element={<TelegramWebApp />} />
-        <Route path='/twa/register' element={<RegisterPage />} />
-        <Route path='/twa/finish' element={<FinishPage />} />
-        <Route path='/twa/leaderboards' element={<TWALeaderboardPage />} />
-        <Route path='/twa/prizes' element={<PrizesPage />} />
+        <Route path='/' element={<TelegramWebApp />} />
+        <Route path='/register' element={<RegisterPage />} />
+        <Route path='/finish' element={<FinishPage />} />
+        <Route path='/leaderboards' element={<TWALeaderboardPage />} />
+        <Route path='/prizes' element={<PrizesPage />} />
       </Route>
+      <Route path='/twa' element={<Navigate to='/' replace />} />
+      <Route path='/twa/register' element={<Navigate to='/register' replace />} />
+      <Route path='/twa/finish' element={<Navigate to='/finish' replace />} />
+      <Route path='/twa/leaderboards' element={<Navigate to='/leaderboards' replace />} />
+      <Route path='/twa/prizes' element={<Navigate to='/prizes' replace />} />
       <Route element={
         <RequireAuth>
           <AdminLayout />

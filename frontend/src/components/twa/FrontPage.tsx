@@ -28,7 +28,7 @@ const FrontPage = () => {
       <Banner />
       <div className="flex flex-col w-60 gap-3">
         <button
-          onClick={() => navigate('/twa/register')}
+          onClick={() => navigate('/register')}
           className="bg-cs-orange hover:bg-amber-700 rounded-xl p-4 w-full"
         >
           🧹 Register
@@ -46,14 +46,14 @@ const FrontPage = () => {
             </a>
         }
         <button
-          onClick={() => navigate('/twa/leaderboards')}
+          onClick={() => navigate('/leaderboards')}
           className="rounded-xl p-4 w-full
           bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800"
         >
           🏆 Leaderboards
         </button>
         <button
-          onClick={() => navigate('/twa/prizes')}
+          onClick={() => navigate('/prizes')}
           className="rounded-xl p-4 w-full
           bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800"
         >

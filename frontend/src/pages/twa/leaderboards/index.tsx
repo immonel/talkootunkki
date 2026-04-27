@@ -8,7 +8,7 @@ const TWALeaderboardPage = () => {
 
   useEffect(() => {
     WebApp.BackButton.show()
-    WebApp.BackButton.onClick(() => navigate("/twa"))
+    WebApp.BackButton.onClick(() => navigate("/"))
   }, [ navigate ])
 
   return (
