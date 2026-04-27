@@ -2,22 +2,26 @@ import { useEffect, useState } from "react";
 import LoginInfoCard from "./LoginInfoCard";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import type { Event } from "@/src/types";
+import type { Event, ParticipationCache } from "@/src/types";
 
-const LoggedIn = () => {
-  const participation = JSON.parse(window.localStorage.getItem('participation') || '')
+type Props = {
+  participation: ParticipationCache;
+}
+
+const LoggedIn = ({ participation }: Props) => {
   const { start_date } = participation
-  const [ elapsedTime, setElapsedTime ] = useState(Date.now() - start_date)
+  const startTime = new Date(start_date).getTime()
+  const [ elapsedTime, setElapsedTime ] = useState(Date.now() - startTime)
   const [ telegramGroupLink, setTelegramGroupLink ] = useState<string | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setElapsedTime(Date.now() - start_date)
+      setElapsedTime(Date.now() - startTime)
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [ start_date ])
+  }, [ startTime ])
 
   useEffect(() => {
     axios.get<Event>('/api/events/current')

@@ -2,10 +2,10 @@ import { toTimeString } from "@/src/utils";
 
 type Props = {
   first_name: string;
-  last_name: string;
-  username: string;
-  email: string;
-  association: string;
+  last_name: string | null;
+  username: string | null;
+  email: string | null;
+  association: string | null;
   elapsedTime: number;
 }
 

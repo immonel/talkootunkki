@@ -6,6 +6,8 @@ import EnterCode from '@components/twa/register/EnterCode'
 import DebugInfo from '@components/twa/DebugInfo'
 import EnterEmail from '@components/twa/register/EnterEmail'
 import { useNavigate } from 'react-router-dom'
+import type { ParticipationWithParticipant } from '@/src/types'
+import { storeParticipation } from '@/src/utils/participation'
 
 const showDebugInfo = import.meta.env.DEV
 
@@ -16,7 +18,7 @@ const RegisterPage = () => {
   const [ association, setAssociation ] = useState('')
   const [ email, setEmail ] = useState('')
   const initData = WebApp.initData
-  const { username, first_name, last_name } = WebApp.initDataUnsafe.user || {}
+  const { username } = WebApp.initDataUnsafe.user || {}
   const navigate = useNavigate()
   
   const handleSelectAssociationSubmit = (association: string) => {
@@ -35,18 +37,15 @@ const RegisterPage = () => {
 
   const handleRegisterSubmit = async (code: string) => {
     const url = '/api/register'
-    return axios.post(url, { code, initData, association, email })
+    return axios
+      .post<ParticipationWithParticipant>(url, { code, initData, association, email })
+      .then(response => {
+        storeParticipation(response.data)
+        return response
+      })
   }
 
   const handleSuccessfulRegistration = async () => {
-    window.localStorage.setItem('participation', JSON.stringify({
-      association,
-      first_name,
-      last_name,
-      username,
-      email,
-      start_date: Date.now()
-    }))
     navigate('/twa')
   }
   

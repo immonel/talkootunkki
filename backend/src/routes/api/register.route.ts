@@ -1,7 +1,7 @@
 import express from 'express'
 import { getUserData } from '../../services/telegram.service';
 import { validate } from '../../services/code.service';
-import { hasOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
+import { getOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
 import { getCurrentEvent, getCurrentEventAssociations } from '../../services/event.service';
 import { GoogleSheetsRow, UserData } from '../../types';
 import { uploadParticipationToSheets } from '../../services/google.service';
@@ -36,6 +36,7 @@ registrationRouter.post('/', async (request, response, next) => {
     }
 
     const [ user ] = await saveOrUpdateParticipantToDb(userData)
+    const userId = userData.id.toString()
     console.log('Saved user to database', user.dataValues)
     
     const currentEvent = await getCurrentEvent()
@@ -44,16 +45,23 @@ registrationRouter.post('/', async (request, response, next) => {
       return
     }
     const association: string | undefined = request.body.association || undefined
-    const participation = await joinEvent(currentEvent.event_id, user.user_id, association)
+    const participation = await joinEvent(currentEvent.event_id, userId, association)
+    const openParticipation = participation || await getOpenParticipation(userId, currentEvent.event_id)
+    if (!openParticipation) {
+      response.status(500).send('Failed to create participation')
+      return
+    }
     
     // Upload the participation to sheets
-    const googleSheetsRow: GoogleSheetsRow = {
-      ...user?.dataValues,
-      ...participation?.dataValues
-    } as GoogleSheetsRow
-    uploadParticipationToSheets(googleSheetsRow)
+    if (participation) {
+      const googleSheetsRow: GoogleSheetsRow = {
+        ...user.dataValues,
+        ...participation.dataValues
+      } as GoogleSheetsRow
+      uploadParticipationToSheets(googleSheetsRow)
+    }
     
-    response.status(200).json(userData)
+    response.status(200).json(await getOpenParticipation(userId, currentEvent.event_id))
   } catch (exception) {
     next(exception)
   }
@@ -75,12 +83,12 @@ registrationRouter.post('/check', async (request, response, next) => {
       response.status(400).end()
       return
     }
-    const loggedIn = await hasOpenParticipation(userData.id.toString(), currentEvent.event_id)
-    if (!loggedIn) {
+    const participation = await getOpenParticipation(userData.id.toString(), currentEvent.event_id)
+    if (!participation) {
       response.status(400).end()
       return
     }
-    response.status(200).json(userData)
+    response.status(200).json(participation)
   } catch (exception) {
     next(exception)
   }

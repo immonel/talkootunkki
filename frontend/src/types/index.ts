@@ -16,6 +16,7 @@ export interface Participant {
 export interface Participation {
   participation_id: string;
   user_id: string;
+  event_id: string;
   start_date: string;
   end_date: string | null;
   association: string | null;
@@ -32,6 +33,13 @@ export interface EventWithLeaderboards extends Event {
 
 export interface ParticipationWithParticipant extends Participation {
   Participant: Participant;
+}
+
+export interface ParticipationCache extends Participation {
+  username: string | null;
+  first_name: string;
+  last_name: string | null;
+  email: string | null;
 }
 
 export interface AdminEventData extends EventWithLeaderboards {

@@ -17,7 +17,7 @@ export const saveOrUpdateParticipantToDb = async (userData: UserData) => {
   } = userData
 
   return await Participant.upsert({
-    user_id: id,
+    user_id: id.toString(),
     first_name,
     last_name,
     username,
@@ -35,6 +35,17 @@ const getOpenParticipations = async (user_id: string, event_id: string) => {
   })
   return openParticipations
 }
+
+export const getOpenParticipation = async (user_id: string, event_id: string) => (
+  await Participation.findOne({
+    where: {
+      user_id,
+      event_id,
+      end_date: null
+    },
+    include: Participant
+  })
+)
 
 /**
  * Returns a boolean value indicating whether participant has an open participation
