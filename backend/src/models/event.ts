@@ -33,15 +33,6 @@ const Event = sequelize.define<EventModel>('Event', {
     type: DataTypes.STRING,
     allowNull: true
   }
-}, {
-  indexes: [{
-    name: 'events_one_active_event',
-    unique: true,
-    fields: ['is_active'],
-    where: {
-      is_active: true
-    }
-  }]
 })
 
 export default Event;
