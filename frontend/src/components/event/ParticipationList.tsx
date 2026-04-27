@@ -27,8 +27,16 @@ const toDateTimeLocalValue = (date: string | null) => {
   if (!date) {
     return ''
   }
-  const offset = new Date().getTimezoneOffset() * 60000
-  return new Date(new Date(date).getTime() - offset).toISOString().slice(0, 16)
+  const parsedDate = new Date(date)
+  const offset = parsedDate.getTimezoneOffset() * 60000
+  return new Date(parsedDate.getTime() - offset).toISOString().slice(0, 19)
+}
+
+const toTimestamp = (date: string) => {
+  if (!date) {
+    return null
+  }
+  return new Date(date).getTime()
 }
 
 const ParticipationListItem = ({ participation, onParticipationChanged }: ParticipationListItemProps) => {
@@ -69,8 +77,8 @@ const ParticipationListItem = ({ participation, onParticipationChanged }: Partic
 
     axios.patch(`/api/participations/${participation_id}`, {
       association: formData.association || null,
-      start_date: formData.start_date || null,
-      end_date: formData.end_date || null
+      start_date: toTimestamp(formData.start_date),
+      end_date: toTimestamp(formData.end_date)
     })
       .then(() => {
         setIsEditing(false)
@@ -97,6 +105,7 @@ const ParticipationListItem = ({ participation, onParticipationChanged }: Partic
               Start
               <input
                 type="datetime-local"
+                step="1"
                 required
                 value={formData.start_date}
                 onChange={(event) => setFormData({ ...formData, start_date: event.target.value })}
@@ -107,6 +116,7 @@ const ParticipationListItem = ({ participation, onParticipationChanged }: Partic
               End
               <input
                 type="datetime-local"
+                step="1"
                 value={formData.end_date}
                 onChange={(event) => setFormData({ ...formData, end_date: event.target.value })}
                 className="mt-1 rounded border border-gray-300 px-2 py-1"
