@@ -38,11 +38,19 @@ const Leaderboard = ({ data }: LeaderboardProps) => (
   <div className="flex flex-col items-center w-11/12">
     <h2 className="text-2xl font-semibold mb-8">Leaderboards</h2>
     <div className="w-full max-w-md bg-gray-200 dark:bg-gray-700 rounded-lg shadow">
-      <ul className="divide-y divide-gray-300 dark:divide-gray-600">
-        {data.sort(sortByTime).map((association, index) => (
-          <LeaderboardRow key={index} association={association} index={index} />
-        ))}
-      </ul>
+      {data.length > 0
+        ? (
+          <ul className="divide-y divide-gray-300 dark:divide-gray-600">
+            {data.sort(sortByTime).map((association, index) => (
+              <LeaderboardRow key={index} association={association} index={index} />
+            ))}
+          </ul>
+        )
+        : (
+          <p className="px-4 py-6 text-center text-sm text-gray-700 dark:text-gray-300">
+            No leaderboard entries yet.
+          </p>
+        )}
     </div>
   </div>
 )
