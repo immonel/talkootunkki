@@ -68,13 +68,24 @@ export const joinEvent = async (event_id: string, user_id: string, association?:
 }
 
 export const leaveEvent = async (event_id: string, user_id: string) => {
-  return await Participation.update({ end_date: Date.now() }, {
+  const participation = await Participation.findOne({
     where: {
       event_id,
       user_id,
       end_date: null
     },
-    returning: true
+    include: Participant
+  })
+
+  if (!participation) {
+    return null
+  }
+
+  participation.end_date = Date.now()
+  await participation.save()
+
+  return await Participation.findByPk(participation.participation_id, {
+    include: Participant
   })
 }
 

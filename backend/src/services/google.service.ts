@@ -134,6 +134,26 @@ export const validateGoogleSheetsAccess = async (
   }
 }
 
+type GoogleSheetsRowSource = {
+  dataValues?: Record<string, unknown>;
+  Participant?: GoogleSheetsRowSource;
+} & Record<string, unknown>
+
+export const toGoogleSheetsRow = (source: { dataValues?: Record<string, unknown> }) => {
+  const participationValues = source.dataValues || source
+  const participant = (
+    (source as GoogleSheetsRowSource).Participant ||
+    (participationValues as GoogleSheetsRowSource).Participant
+  ) as GoogleSheetsRowSource | undefined
+  const participantValues = participant?.dataValues || participant || {}
+  const { Participant, ...flatParticipationValues } = participationValues as GoogleSheetsRowSource
+
+  return {
+    ...participantValues,
+    ...flatParticipationValues
+  } as unknown as GoogleSheetsRow
+}
+
 const initializeSheet = async (doc: GoogleSpreadsheet) => {
   await doc.loadInfo()
   const sheet = doc.sheetsByTitle[sheetTitle]

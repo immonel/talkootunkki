@@ -4,7 +4,7 @@ import { validate } from '../../services/code.service';
 import { getOpenParticipation, joinEvent, leaveEvent, saveOrUpdateParticipantToDb } from '../../services/participant.service';
 import { getCurrentEvent, getCurrentEventAssociations } from '../../services/event.service';
 import { GoogleSheetsRow, UserData } from '../../types';
-import { uploadParticipationToSheets } from '../../services/google.service';
+import { toGoogleSheetsRow, uploadParticipationToSheets } from '../../services/google.service';
 
 const registrationRouter = express.Router();
 
@@ -58,7 +58,7 @@ registrationRouter.post('/', async (request, response, next) => {
         ...user.dataValues,
         ...participation.dataValues
       } as GoogleSheetsRow
-      uploadParticipationToSheets(googleSheetsRow)
+      await uploadParticipationToSheets(googleSheetsRow)
     }
     
     response.status(200).json(await getOpenParticipation(userId, currentEvent.event_id))
@@ -114,14 +114,11 @@ registrationRouter.post('/finish', async (request, response, next) => {
       response.status(400).send('No event to finish')
       return
     }
-    const [ affectedRowCount, affectedRows ] = await leaveEvent(currentEvent.event_id, userData.id.toString())
+    const participation = await leaveEvent(currentEvent.event_id, userData.id.toString())
     
     // Upload the participation to sheets
-    if (affectedRowCount) {
-      const googleSheetsRow: GoogleSheetsRow = {
-        ...affectedRows[0].dataValues
-      } as GoogleSheetsRow
-      uploadParticipationToSheets(googleSheetsRow)
+    if (participation) {
+      await uploadParticipationToSheets(toGoogleSheetsRow(participation))
     }
     console.log('Finished participation for user', userData.id)
       

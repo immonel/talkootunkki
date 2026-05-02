@@ -1,7 +1,6 @@
 import express from 'express'
 import { deleteParticipation, updateParticipation } from '../../services/participant.service';
-import { uploadParticipationToSheets } from '../../services/google.service';
-import { GoogleSheetsRow } from '../../types';
+import { toGoogleSheetsRow, uploadParticipationToSheets } from '../../services/google.service';
 
 const participationsRouter = express.Router();
 
@@ -14,7 +13,7 @@ participationsRouter.patch('/:id', async (request, response, next) => {
       return
     }
 
-    uploadParticipationToSheets(participation.dataValues as GoogleSheetsRow)
+    await uploadParticipationToSheets(toGoogleSheetsRow(participation))
 
     response.status(200).json(participation)
   } catch (exception) {
