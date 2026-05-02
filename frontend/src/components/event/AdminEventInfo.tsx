@@ -5,6 +5,7 @@ import Leaderboard from "@components/common/Leaderboards";
 import ParticipationList from "./ParticipationList";
 import { socket } from "@/src/utils/socket";
 import { useNavigate } from "react-router-dom";
+import EventForm from "@components/admin/EventForm";
 
 type EventProps = {
   event_id: string;
@@ -16,6 +17,7 @@ type EventInfoProps = {
 }
 
 const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
+  const [isEditing, setIsEditing] = useState(false)
   const participations = eventData.participations
   const totalParticipations = participations.length
   const currentlyParticipating = participations
@@ -50,6 +52,11 @@ const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
       .then(response => setEventData(response.data))
       .catch(error => console.log('Failed to refresh event data', eventData.event_id, error))
   }
+
+  const handleEventSaved = () => {
+    setIsEditing(false)
+    refreshEventData()
+  }
   
   return (
     <div className="flex flex-col gap-10 w-10/12 items-center">
@@ -59,6 +66,12 @@ const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
           <p>{eventData.is_active ? 'Active' : 'Inactive'}</p>
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="rounded-xl p-3 bg-gray-700 hover:bg-gray-800"
+          >
+            {isEditing ? 'Cancel edit' : 'Edit event'}
+          </button>
           <button
             onClick={handleToggleActive}
             className="rounded-xl p-3 bg-cs-orange hover:bg-amber-700"
@@ -73,6 +86,12 @@ const EventInfo = ({ eventData, setEventData }: EventInfoProps) => {
           </button>
         </div>
       </div>
+      {isEditing && (
+        <EventForm
+          event={eventData}
+          onSaved={handleEventSaved}
+        />
+      )}
       <div className="w-full">
         <p>Total participations: {totalParticipations}</p>
         <p>Currently participating: {currentlyParticipating}</p>

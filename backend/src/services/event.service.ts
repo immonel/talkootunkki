@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { LeaderboardAssociation } from "../types";
 import { sequelize } from "./db.service";
 import {
+  getGoogleCredentials,
   parseGoogleSheetId,
   saveGoogleCredentials,
   validateGoogleSheetsAccess,
@@ -87,6 +88,16 @@ export const createEvent = async (event: EventInput) => {
       { transaction }
     )
   })
+}
+
+export const updateEventById = async (id: string, event: EventInput) => {
+  const existingEvent = await getEventById(id)
+  if (!existingEvent) {
+    return null
+  }
+
+  const eventInput = await prepareEventInput(event)
+  return existingEvent.update(eventInput)
 }
 
 export const setEventActive = async (id: string, is_active: boolean) => sequelize.transaction(async (transaction) => {
@@ -195,8 +206,10 @@ export const getEventDetails = async (event_id: string) => {
   }
   const leaderboards = await getLeaderboards(event_id)
   const participations = await getParticipations(event_id)
+  const googleCredentials = await getGoogleCredentials()
   return {
     ...event.dataValues,
+    google_service_account_email: googleCredentials?.service_account_email || null,
     leaderboards,
     participations
   }

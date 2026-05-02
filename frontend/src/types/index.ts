@@ -4,6 +4,7 @@ export interface Event {
   is_active: boolean;
   telegram_group_link?: string | null;
   google_sheet_id?: string | null;
+  google_service_account_email?: string | null;
 }
 
 export interface Participant {

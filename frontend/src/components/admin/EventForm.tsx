@@ -1,23 +1,40 @@
 import axios, { AxiosError } from 'axios';
-import { FormEvent, useState } from 'react';
+import { Event } from '@/src/types';
+import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const EventForm = () => {
-  const [eventName, setEventName] = useState('');
-  const [telegramGroupLink, setTelegramGroupLink] = useState('');
-  const [googleSheetLink, setGoogleSheetLink] = useState('');
+type EventFormProps = {
+  event?: Event;
+  onSaved?: (event: Event) => void;
+}
+
+const EventForm = ({ event, onSaved }: EventFormProps) => {
+  const [eventName, setEventName] = useState(event?.event_name || '');
+  const [telegramGroupLink, setTelegramGroupLink] = useState(event?.telegram_group_link || '');
+  const [googleSheetLink, setGoogleSheetLink] = useState(event?.google_sheet_id || '');
   const [googleServiceAccountEmail, setGoogleServiceAccountEmail] = useState('');
   const [googlePrivateKey, setGooglePrivateKey] = useState('');
   const [showGoogleCredentials, setShowGoogleCredentials] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate()
+  const isEditing = Boolean(event)
+
+  useEffect(() => {
+    setEventName(event?.event_name || '')
+    setTelegramGroupLink(event?.telegram_group_link || '')
+    setGoogleSheetLink(event?.google_sheet_id || '')
+    setGoogleServiceAccountEmail('')
+    setGooglePrivateKey('')
+    setShowGoogleCredentials(false)
+    setErrorMessage('')
+  }, [event?.event_id])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErrorMessage('')
     setSubmitting(true)
-    const event = {
+    const eventPayload = {
       'event_name': eventName,
       'telegram_group_link': telegramGroupLink || null,
       'google_sheet_link': googleSheetLink || null,
@@ -27,8 +44,14 @@ const EventForm = () => {
       })
     }
     try {
-      await axios.post('/api/events', event)
-      navigate('/admin')
+      const response = isEditing
+        ? await axios.patch(`/api/events/${event?.event_id}`, eventPayload)
+        : await axios.post('/api/events', eventPayload)
+      if (onSaved) {
+        onSaved(response.data)
+      } else {
+        navigate('/admin')
+      }
     } catch (error) {
       const axiosError = error as AxiosError<{ code?: string; message?: string }>
       if (axiosError.response?.data?.code === 'GOOGLE_SHEETS_ACCESS_FAILED') {
@@ -93,6 +116,39 @@ const EventForm = () => {
             required
           />
         </div>
+        {isEditing && !showGoogleCredentials && (
+          <div className="mb-4">
+            <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end">
+              <label className="block text-gray-700 text-sm font-bold" htmlFor="google-service-account-email-redacted">
+                Service Account Email
+                <input
+                  className="mt-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
+                  id="google-service-account-email-redacted"
+                  type="text"
+                  value={event?.google_service_account_email || ''}
+                  readOnly
+                />
+              </label>
+              <label className="block text-gray-700 text-sm font-bold" htmlFor="google-private-key-redacted">
+                Private Key
+                <input
+                  className="mt-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
+                  id="google-private-key-redacted"
+                  type="text"
+                  value="••••••••"
+                  readOnly
+                />
+              </label>
+              <button
+                type="button"
+                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowGoogleCredentials(true)}
+              >
+                Update credentials
+              </button>
+            </div>
+          </div>
+        )}
         {showGoogleCredentials && (
           <>
             <div className="mb-4">
@@ -132,7 +188,7 @@ const EventForm = () => {
             type="submit"
             disabled={submitting}
           >
-            {submitting ? 'Submitting...' : 'Submit'}
+            {submitting ? 'Submitting...' : isEditing ? 'Save' : 'Submit'}
           </button>
         </div>
       </form>
