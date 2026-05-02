@@ -226,9 +226,14 @@ const formatDuration = (startTimestamp: number | undefined, endTimestamp: number
     return ''
   }
 
-  const durationMinutes = Math.floor((endTimestamp - startTimestamp) / (1000 * 60))
-  const hours = Math.floor(durationMinutes / 60)
-  const minutes = durationMinutes % 60
+  const durationSeconds = Math.floor((endTimestamp - startTimestamp) / 1000)
+  const hours = Math.floor(durationSeconds / (60 * 60))
+  const minutes = Math.floor((durationSeconds % (60 * 60)) / 60)
+  const seconds = durationSeconds % 60
 
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+  return [
+    hours,
+    minutes,
+    seconds
+  ].map((value) => value.toString().padStart(2, '0')).join(':')
 }
